@@ -1,0 +1,10 @@
+{
+  "name": "project-manager-app",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"cd backend && mvn spring-boot:run\" \"cd frontend && npm run start\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
