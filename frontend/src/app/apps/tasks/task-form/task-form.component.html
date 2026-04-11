@@ -1,0 +1,36 @@
+<div class="form-container">
+  <div class="task-form">
+    <h2>{{ isEditMode ? 'Task bearbeiten' : 'Task erstellen' }}</h2>
+
+    <div class="form-group">
+      <label>Titel <span style="color: red;">*</span></label>
+      <input type="text" [(ngModel)]="task.title" name="title" />
+    </div>
+
+    <div class="form-group">
+      <label>Beschreibung <span style="color: red;">*</span></label>
+      <textarea [(ngModel)]="task.description" name="description" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Deadline <span style="color: red;">*</span></label>
+      <input type="date" [(ngModel)]="task.deadline" name="deadline" />
+    </div>
+
+    @if (isEditMode) {
+      <div class="form-group">
+        <label>Status</label>
+        <select [(ngModel)]="task.statusId" name="status">
+          <option *ngFor="let status of statuses" [ngValue]="status.id">
+            {{ status.name }}
+          </option>
+        </select>
+      </div>
+    }
+
+    <div class="form-actions">
+      <button (click)="cancel()" class="btn-cancel">Abbrechen</button>
+      <button (click)="saveTask()" class="btn-save">{{ isEditMode ? 'Speichern' : 'Erstellen' }}</button>
+    </div>
+  </div>
+</div>

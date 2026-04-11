@@ -1,0 +1,65 @@
+<div class="kanban-container" style="display: flex; gap: 20px; overflow-x: auto; padding: 20px; justify-content: center;">
+
+  <!-- SPALTE 1: TO DO -->
+  <div class="column" style="flex: 1; background: #f4f5f7; padding: 15px; border-radius: 8px; min-width: 300px; max-width: 400px;">
+    <h3 style="text-align: center; color: #d9534f; margin-top: 0;">To Do</h3>
+
+    @for (task of todoTasks; track task.id) {
+      <div class="card" style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h4 style="margin: 0 0 5px 0; font-size: 1.1em;">{{ task.title }}</h4>
+        <p style="font-size: 0.9em; color: #666; margin: 0 0 5px 0;">{{ task.description }}</p>
+        <p style="font-size: 0.8em; color: #888; margin: 0;"><strong>Deadline:</strong> {{ task.deadline }}</p>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+          <button (click)="moveTask(task, 'forward')" style="background: #5cb85c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            ➡️ In Progress
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- SPALTE 2: IN PROGRESS -->
+  <div class="column" style="flex: 1; background: #f4f5f7; padding: 15px; border-radius: 8px; min-width: 300px; max-width: 400px;">
+    <h3 style="text-align: center; color: #f0ad4e; margin-top: 0;">In Progress</h3>
+
+    @for (task of progressTasks; track task.id) {
+      <div class="card" style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h4 style="margin: 0 0 5px 0; font-size: 1.1em;">{{ task.title }}</h4>
+        <p style="font-size: 0.9em; color: #666; margin: 0 0 5px 0;">{{ task.description }}</p>
+        <p style="font-size: 0.8em; color: #888; margin: 0;"><strong>Deadline:</strong> {{ task.deadline }}</p>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+
+          <button (click)="moveTask(task, 'backward')" style="background: #d9534f; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+            ⬅️ To Do
+          </button>
+
+          <button (click)="moveTask(task, 'forward')" style="background: #5cb85c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+            ➡️ Done
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- SPALTE 3: DONE -->
+  <div class="column" style="flex: 1; background: #f4f5f7; padding: 15px; border-radius: 8px; min-width: 300px; max-width: 400px;">
+    <h3 style="text-align: center; color: #5cb85c; margin-top: 0;">Done</h3>
+
+    @for (task of doneTasks; track task.id) {
+      <div class="card" style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h4 style="margin: 0 0 5px 0; font-size: 1.1em;">{{ task.title }}</h4>
+        <p style="font-size: 0.9em; color: #666; margin: 0 0 5px 0;">{{ task.description }}</p>
+        <p style="font-size: 0.8em; color: #888; margin: 0;"><strong>Deadline:</strong> {{ task.deadline }}</p>
+
+        <div style="display: flex; justify-content: flex-start; margin-top: 15px;">
+          <button (click)="moveTask(task, 'backward')" style="background: #f0ad4e; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+            ⬅️ In Progress
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>

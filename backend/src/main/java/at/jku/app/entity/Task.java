@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
@@ -44,6 +43,4 @@ public class Task {
 
     @Column
     private String lastStepDesc;
-
-
 }
