@@ -1,1 +1,22 @@
+<nav style="background: #007bff; padding: 0 24px; display: flex; align-items: center; height: 52px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); gap: 8px;">
+  <span style="color: white; font-weight: bold; font-size: 1.1rem; margin-right: 24px;">Project Manager</span>
+  <a routerLink="/tasks" routerLinkActive="nav-active"
+     style="color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 6px 14px; border-radius: 6px;"
+     [routerLinkActiveOptions]="{ exact: true }">
+    Tasks
+  </a>
+  <a routerLink="/projects" routerLinkActive="nav-active"
+     style="color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 6px 14px; border-radius: 6px;"
+     [routerLinkActiveOptions]="{ exact: false }">
+    Projekte
+  </a>
+</nav>
+
 <router-outlet></router-outlet>
+
+<style>
+  .nav-active {
+    background: rgba(255,255,255,0.2) !important;
+    color: white !important;
+  }
+</style>

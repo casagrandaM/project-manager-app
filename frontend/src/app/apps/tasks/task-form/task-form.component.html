@@ -17,13 +17,25 @@
       <input type="date" [(ngModel)]="task.deadline" name="deadline" />
     </div>
 
+    @if (!isEditMode && !projectId) {
+      <div class="form-group">
+        <label>Projekt <span style="color: red;">*</span></label>
+        <select [(ngModel)]="task.projectId" name="projectId">
+          <option [ngValue]="null" disabled>Projekt auswählen...</option>
+          @for (project of projects; track project.id) {
+            <option [ngValue]="project.id">{{ project.title }}</option>
+          }
+        </select>
+      </div>
+    }
+
     @if (isEditMode) {
       <div class="form-group">
         <label>Status</label>
         <select [(ngModel)]="task.statusId" name="status">
-          <option *ngFor="let status of statuses" [ngValue]="status.id">
-            {{ status.name }}
-          </option>
+          @for (status of statuses; track status.id) {
+            <option [ngValue]="status.id">{{ status.name }}</option>
+          }
         </select>
       </div>
     }

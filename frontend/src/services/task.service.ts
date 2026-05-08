@@ -9,8 +9,9 @@ export class TaskService {
 
   constructor(private http: HttpClient) {}
 
-  getTasks(): Observable<Task[]> {
-    return this.http.get<Task[]>(this.baseUrl);
+  getTasks(projectId?: number): Observable<Task[]> {
+    const url = projectId != null ? `${this.baseUrl}?projectId=${projectId}` : this.baseUrl;
+    return this.http.get<Task[]>(url);
   }
 
   createTask(task: any): Observable<Task> {

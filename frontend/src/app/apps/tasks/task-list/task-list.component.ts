@@ -17,6 +17,7 @@ export class TaskListComponent implements OnInit, OnChanges {
 
   @Input() public searchTerm: string = '';
   @Input() public refreshTrigger: number = 0;
+  @Input() public projectId: number | null = null;
 
   @Output() create = new EventEmitter<void>();
   @Output() edit = new EventEmitter<Task>();
@@ -38,7 +39,7 @@ export class TaskListComponent implements OnInit, OnChanges {
   }
 
   public loadTasks(): void {
-    this.taskService.getTasks().subscribe({
+    this.taskService.getTasks(this.projectId ?? undefined).subscribe({
       next: (data) => {
         this.tasks = data.sort((a, b) => a.id - b.id);
         this.cdr.detectChanges();

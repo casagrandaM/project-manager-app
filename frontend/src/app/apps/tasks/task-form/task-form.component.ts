@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../../../services/task.service';
 import { StatusService } from '../../../../services/status.service';
+import { ProjectService } from '../../../../services/project.service';
 import { Task, CreateTask } from '../../../../models/task.model';
 import { Status } from '../../../../models/status.model';
+import { Project } from '../../../../models/project.model';
 
 @Component({
   selector: 'app-task-form',
@@ -19,20 +21,24 @@ export class TaskFormComponent implements OnInit {
   @Output() showMessage = new EventEmitter<{ text: string, type: 'success' | 'error' }>();
 
   @Input() taskToEdit: Task | null = null;
+  @Input() projectId: number | null = null;
 
   task = {
     title: '',
     description: '',
     deadline: '',
-    statusId: 0
+    statusId: 0,
+    projectId: null as number | null
   };
 
   isEditMode = false;
   statuses: Status[] = [];
+  projects: Project[] = [];
 
   constructor(
     private taskService: TaskService,
     private statusService: StatusService,
+    private projectService: ProjectService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -43,6 +49,9 @@ export class TaskFormComponent implements OnInit {
       this.task.title = this.taskToEdit.title;
       this.task.description = this.taskToEdit.description || '';
       this.task.deadline = this.taskToEdit.deadline || '';
+      this.task.projectId = this.taskToEdit.projectId ?? null;
+    } else if (this.projectId) {
+      this.task.projectId = this.projectId;
     }
 
     this.statusService.getAllStatuses().subscribe({
@@ -63,16 +72,23 @@ export class TaskFormComponent implements OnInit {
         }
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('❌ Fehler beim Laden der Statusse', err);
-      }
+      error: (err) => console.error('Fehler beim Laden der Statusse', err)
     });
+
+    if (!this.projectId) {
+      this.projectService.getProjects().subscribe({
+        next: (data) => {
+          this.projects = data;
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Fehler beim Laden der Projekte', err)
+      });
+    }
   }
 
   validateForm(): boolean {
     const errors: string[] = [];
 
-    // Alle Pflichtfelder prüfen und Fehler sammeln
     if (!this.task.title || this.task.title.trim() === '') {
       errors.push('Titel');
     }
@@ -82,7 +98,6 @@ export class TaskFormComponent implements OnInit {
     if (!this.task.deadline) {
       errors.push('Deadline');
     }
-
     if (errors.length > 0) {
       const message = `Bitte füllen Sie folgende Pflichtfelder aus: ${errors.join(', ')}.`;
       this.showMessage.emit({ text: message, type: 'error' });
@@ -102,13 +117,11 @@ export class TaskFormComponent implements OnInit {
         title: this.task.title,
         description: this.task.description,
         deadline: this.task.deadline,
-        projectId: 1,
+        projectId: this.task.projectId!,
         createdById: 1
       };
       this.taskService.createTask(dto).subscribe({
-        next: () => {
-          this.close.emit(true);
-        },
+        next: () => this.close.emit(true),
         error: (err) => {
           console.error(err);
           this.showMessage.emit({ text: 'Fehler beim Erstellen des Tasks.', type: 'error' });
@@ -128,7 +141,7 @@ export class TaskFormComponent implements OnInit {
           if (this.task.statusId > 0) {
             this.taskService.changeTaskStatus(taskId, this.task.statusId).subscribe({
               next: () => this.close.emit(true),
-              error: (err) => this.close.emit(true)
+              error: () => this.close.emit(true)
             });
           } else {
             this.close.emit(true);

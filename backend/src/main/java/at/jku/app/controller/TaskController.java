@@ -30,11 +30,11 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskResponseDto> getAllTasks() {
-        return taskService.getAllTasks()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public List<TaskResponseDto> getAllTasks(@RequestParam(required = false) Long projectId) {
+        List<Task> tasks = projectId != null
+                ? taskService.getTasksByProjectId(projectId)
+                : taskService.getAllTasks();
+        return tasks.stream().map(this::toDto).collect(Collectors.toList());
     }
 
     @PostMapping
@@ -44,9 +44,11 @@ public class TaskController {
         task.setDescription(dto.description);
         task.setDeadline(dto.deadline != null ? LocalDate.parse(dto.deadline) : null);
 
-        Project project = new Project();
-        project.setId(dto.projectId != null ? dto.projectId : 1L);
-        task.setProject(project);
+        if (dto.projectId != null) {
+            Project project = new Project();
+            project.setId(dto.projectId);
+            task.setProject(project);
+        }
 
         User user = new User();
         user.setId(1L);

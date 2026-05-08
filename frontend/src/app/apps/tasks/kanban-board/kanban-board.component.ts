@@ -14,8 +14,8 @@ import { Status } from '../../../../models/status.model';
 })
 export class KanbanBoardComponent implements OnInit, OnChanges {
 
-  // ÄNDERUNG: Typ auf number geändert, um den Counter aus der Page zu empfangen
   @Input() refreshTrigger: number = 0;
+  @Input() projectId: number | null = null;
 
   @Output() edit = new EventEmitter<Task>();
 
@@ -58,7 +58,7 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
         this.mapStatusIds();
 
         // 2. Tasks laden
-        this.taskService.getTasks().subscribe({
+        this.taskService.getTasks(this.projectId ?? undefined).subscribe({
           next: (tasks) => {
             this.sortTasksIntoColumns(tasks);
             this.cdr.detectChanges();
