@@ -7,5 +7,5 @@ export const routes: Routes = [
   { path: 'projects', component: ProjectPageComponent },
   { path: 'projects/:id', component: ProjectDetailComponent },
   { path: 'tasks', component: TaskPageComponent },
-  { path: '', redirectTo: 'projects', pathMatch: 'full' }
+  { path: '', redirectTo: 'tasks', pathMatch: 'full' }
 ];
