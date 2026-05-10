@@ -1,0 +1,47 @@
+<div style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;">
+
+  @if (!showForm) {
+    <app-project-list
+      [refreshTrigger]="refreshCounter"
+      (create)="openForm()"
+      (edit)="openEditForm($event)"
+      (requestDelete)="requestDelete($event)"
+      (select)="selectProject($event)">
+    </app-project-list>
+  }
+
+  @if (showForm) {
+    <app-project-form
+      [projectToEdit]="projectToEdit"
+      (close)="closeForm($event)"
+      (showMessage)="handleFormMessage($event)">
+    </app-project-form>
+  }
+
+  <!-- DIALOG -->
+  @if (showDialog) {
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+      <div style="background: white; padding: 28px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); min-width: 300px; max-width: 420px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+
+        @if (!isConfirmDialog) {
+          @if (isSuccessDialog) {
+            <div style="width: 50px; height: 50px; background: #d4edda; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 30px; height: 30px;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+          }
+        }
+
+        <p style="font-size: 16px; margin: 0; color: #333;">{{ dialogMessage }}</p>
+
+        @if (isConfirmDialog) {
+          <div style="display: flex; gap: 12px;">
+            <button (click)="closeDialog(true)" style="padding: 8px 22px; border-radius: 6px; border: none; background: #007bff; cursor: pointer; font-weight: bold; color: white;">OK</button>
+            <button (click)="closeDialog(false)" style="padding: 8px 22px; border-radius: 6px; border: none; background: #d1d5db; cursor: pointer; font-weight: bold; color: #111;">Abbrechen</button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

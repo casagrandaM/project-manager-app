@@ -1,0 +1,32 @@
+<div class="projects-wrapper">
+
+  <div class="projects-header">
+    <h2 class="header-title">Meine Projekte</h2>
+    <button class="btn-create" (click)="create.emit()">+ Projekt erstellen</button>
+  </div>
+
+  <hr class="divider" />
+
+  @if (projects.length === 0) {
+    <p class="empty-msg">Noch keine Projekte vorhanden. Erstellen Sie Ihr erstes Projekt!</p>
+  }
+
+  @for (project of projects; track project.id) {
+    <div class="project-card" (click)="select.emit(project)">
+      <div class="card-content">
+        <h3 class="project-title">{{ project.title }}</h3>
+        @if (project.description) {
+          <p class="project-desc">{{ project.description }}</p>
+        }
+        <p class="project-date">Erstellt am: {{ formatDate(project.createdAt) }}</p>
+      </div>
+      @if (project.isOwner) {
+        <div class="card-actions" (click)="$event.stopPropagation()">
+          <button class="btn-edit" (click)="edit.emit(project)">Bearbeiten</button>
+          <button class="btn-delete" (click)="requestDelete.emit(project.id)">Löschen</button>
+        </div>
+      }
+    </div>
+  }
+
+</div>
