@@ -3,6 +3,8 @@ package at.jku.app.service;
 import at.jku.app.entity.Status;
 import at.jku.app.entity.StatusHistory;
 import at.jku.app.entity.Task;
+import at.jku.app.entity.TaskAssignment;
+import at.jku.app.repository.TaskAssignmentRepository;
 import at.jku.app.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +18,13 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final StatusHistoryService statusHistoryService;
+    private final TaskAssignmentRepository taskAssignmentRepository;
 
     public TaskService(TaskRepository taskRepository,
-                       StatusHistoryService statusHistoryService) {
+                       StatusHistoryService statusHistoryService, TaskAssignmentRepository taskAssignmentRepository) {
         this.taskRepository = taskRepository;
         this.statusHistoryService = statusHistoryService;
+		this.taskAssignmentRepository = taskAssignmentRepository;
     }
 
     public List<Task> getAllTasks() {
@@ -29,6 +33,13 @@ public class TaskService {
 
     public List<Task> getTasksByProjectId(Long projectId) {
         return taskRepository.findByProjectId(projectId);
+    }
+    
+    public List<Task> getTasksForUser(Long userId) {
+        return taskAssignmentRepository.findByAssigneeId(userId)
+                .stream()
+                .map(TaskAssignment::getTask)
+                .collect(Collectors.toList());
     }
 
     public Task getTaskById(Long id) {

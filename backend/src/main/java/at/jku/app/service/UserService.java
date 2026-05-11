@@ -44,4 +44,11 @@ public class UserService {
     public User createUser(User user) {
         return userRepository.save(user);
     }
+    
+    public void updateUser(Long id, String name, String email) {
+        User user = getById(id);
+        user.setName(name);
+        user.setEmail(email);
+        userRepository.save(user);
+    }
 }
