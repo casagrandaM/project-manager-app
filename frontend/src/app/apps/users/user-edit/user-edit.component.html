@@ -1,0 +1,57 @@
+<div style="max-width: 480px; margin: 48px auto; padding: 0 24px;">
+
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Profil bearbeiten</h1>
+
+  @if (user$ | async; as user) {
+
+    <div style="background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(37,99,235,0.08); padding: 28px;">
+
+      <!-- Name -->
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px;">Name</label>
+        <input
+          [(ngModel)]="formData.name"
+          type="text"
+          style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; color: #1e293b; outline: none; box-sizing: border-box;"
+          (focus)="onFocus($event)"
+          (blur)="onBlur($event)" />
+      </div>
+
+      <!-- Email -->
+      <div style="margin-bottom: 28px;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px;">E-Mail</label>
+        <input
+          [(ngModel)]="formData.email"
+          type="email"
+          style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; color: #1e293b; outline: none; box-sizing: border-box;"
+          (focus)="onFocus($event)"
+          (blur)="onBlur($event)" />
+      </div>
+
+      <!-- Buttons -->
+      <div style="display: flex; gap: 10px;">
+        <button
+          (click)="save()"
+          [disabled]="saving"
+          style="flex: 1; padding: 10px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer;">
+          {{ saving ? 'Wird gespeichert...' : 'Speichern' }}
+        </button>
+        <button
+          (click)="cancel()"
+          style="flex: 1; padding: 10px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer;">
+          Abbrechen
+        </button>
+      </div>
+
+      <!-- Feedback -->
+      @if (successMessage) {
+        <p style="margin: 16px 0 0 0; color: #16a34a; font-size: 0.88rem; font-weight: 500; text-align: center;">{{ successMessage }}</p>
+      }
+      @if (errorMessage) {
+        <p style="margin: 16px 0 0 0; color: #dc2626; font-size: 0.88rem; font-weight: 500; text-align: center;">{{ errorMessage }}</p>
+      }
+
+    </div>
+  }
+
+</div>
