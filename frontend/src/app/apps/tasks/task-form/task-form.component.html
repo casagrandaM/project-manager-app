@@ -14,7 +14,17 @@
 
     <div class="form-group">
       <label>Deadline <span style="color: red;">*</span></label>
-      <input type="date" [(ngModel)]="task.deadline" name="deadline" />
+      <input type="date" [(ngModel)]="task.deadline" name="deadline" [min]="today" />
+    </div>
+
+    <div class="form-group">
+      <label>Zugewiesener Benutzer</label>
+      <select [(ngModel)]="task.assignedUserId" name="assignedUserId">
+        <option [ngValue]="null">Keiner</option>
+        @for (user of users; track user.id) {
+          <option [ngValue]="user.id">{{ user.name }}</option>
+        }
+      </select>
     </div>
 
     @if (!isEditMode && !projectId) {

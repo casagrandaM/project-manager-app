@@ -7,6 +7,8 @@ export interface Task {
   projectId?: number;
   createdByName?: string;
   lastStepDesc?: string;
+  assignedUserId?: number;
+  assignedUserName?: string;
 }
 
 export interface CreateTask {
@@ -15,11 +17,5 @@ export interface CreateTask {
   deadline?: string;
   projectId: number;
   createdById: number;
-}
-
-export interface UpdateTask {
-  title: string;
-  description?: string;
-  deadline?: string;
-  lastStepDesc?: string;
+  assignedUserId?: number | null;
 }

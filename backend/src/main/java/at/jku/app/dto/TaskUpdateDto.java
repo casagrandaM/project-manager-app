@@ -6,4 +6,5 @@ public class TaskUpdateDto {
     public String description;
     public String deadline;
     public String lastStepDesc;
+    public Long assignedUserId;
 }

@@ -6,6 +6,5 @@ public class TaskCreateDto {
     public String description;
     public String deadline;
     public Long projectId;
-    public Long createdById;
-
+    public Long assignedUserId;
 }

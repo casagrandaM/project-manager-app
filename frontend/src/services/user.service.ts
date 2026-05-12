@@ -13,6 +13,10 @@ export class UserService {
     return this.http.get<User>(`${this.baseUrl}/${userId}`);
   }
 
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.baseUrl);
+  }
+
   updateUser(id: number, data: { name: string; email: string }): Observable<User> {
     return this.http.put<User>(`${this.baseUrl}/${id}`, data);
   }

@@ -4,9 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../../../services/task.service';
 import { StatusService } from '../../../../services/status.service';
 import { ProjectService } from '../../../../services/project.service';
+import { UserService } from '../../../../services/user.service';
 import { Task, CreateTask } from '../../../../models/task.model';
 import { Status } from '../../../../models/status.model';
 import { Project } from '../../../../models/project.model';
+import { User } from '../../../../models/user.model';
 
 @Component({
   selector: 'app-task-form',
@@ -23,12 +25,17 @@ export class TaskFormComponent implements OnInit {
   @Input() taskToEdit: Task | null = null;
   @Input() projectId: number | null = null;
 
+  today = new Date().toISOString().split('T')[0];
+
+  users: User[] = [];
+
   task = {
     title: '',
     description: '',
     deadline: '',
     statusId: 0,
-    projectId: null as number | null
+    projectId: null as number | null,
+    assignedUserId: null as number | null
   };
 
   isEditMode = false;
@@ -36,10 +43,11 @@ export class TaskFormComponent implements OnInit {
   projects: Project[] = [];
 
   constructor(
-    private taskService: TaskService,
-    private statusService: StatusService,
-    private projectService: ProjectService,
-    private cdr: ChangeDetectorRef
+      private taskService: TaskService,
+      private statusService: StatusService,
+      private projectService: ProjectService,
+      private userService: UserService,
+      private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +58,7 @@ export class TaskFormComponent implements OnInit {
       this.task.description = this.taskToEdit.description || '';
       this.task.deadline = this.taskToEdit.deadline || '';
       this.task.projectId = this.taskToEdit.projectId ?? null;
+      this.task.assignedUserId = this.taskToEdit.assignedUserId ?? null;
     } else if (this.projectId) {
       this.task.projectId = this.projectId;
     }
@@ -84,6 +93,14 @@ export class TaskFormComponent implements OnInit {
         error: (err) => console.error('Fehler beim Laden der Projekte', err)
       });
     }
+
+    this.userService.getUsers().subscribe({
+      next: (data) => {
+        this.users = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Fehler beim Laden der Benutzer', err)
+    });
   }
 
   validateForm(): boolean {
@@ -118,7 +135,8 @@ export class TaskFormComponent implements OnInit {
         description: this.task.description,
         deadline: this.task.deadline,
         projectId: this.task.projectId!,
-        createdById: 1
+        createdById: 1,
+        assignedUserId: this.task.assignedUserId
       };
       this.taskService.createTask(dto).subscribe({
         next: () => this.close.emit(true),
@@ -133,7 +151,8 @@ export class TaskFormComponent implements OnInit {
         title: this.task.title,
         description: this.task.description,
         deadline: this.task.deadline,
-        lastStepDesc: this.taskToEdit.lastStepDesc
+        lastStepDesc: this.taskToEdit.lastStepDesc,
+        assignedUserId: this.task.assignedUserId
       };
 
       this.taskService.updateTask(taskId, dto).subscribe({

@@ -1,14 +1,12 @@
 package at.jku.app.service;
 
-import at.jku.app.entity.Status;
-import at.jku.app.entity.StatusHistory;
-import at.jku.app.entity.Task;
-import at.jku.app.entity.TaskAssignment;
+import at.jku.app.entity.*;
 import at.jku.app.repository.TaskAssignmentRepository;
 import at.jku.app.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,10 +72,25 @@ public class TaskService {
 
     @Transactional
     public void deleteTask(Long id) {
-        // 1. Zuerst alle Status-Histories löschen, die auf diesen Task zeigen
         statusHistoryService.deleteByTaskId(id);
-
-        // 2. Dann den Task löschen
         taskRepository.deleteById(id);
+    }
+
+    public void assignUser(Long taskId, Long userId) {
+        Task task = getTaskById(taskId);
+
+        // Alte Zuweisung löschen
+        List<TaskAssignment> existing = taskAssignmentRepository.findByTaskId(taskId);
+        taskAssignmentRepository.deleteAll(existing);
+
+        User user = new User();
+        user.setId(userId);
+
+        TaskAssignment assignment = new TaskAssignment();
+        assignment.setTask(task);
+        assignment.setAssignee(user);
+        assignment.setCreatedAt(LocalDateTime.now());
+
+        taskAssignmentRepository.save(assignment);
     }
 }

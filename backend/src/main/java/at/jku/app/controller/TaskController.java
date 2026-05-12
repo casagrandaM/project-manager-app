@@ -3,6 +3,7 @@ package at.jku.app.controller;
 import at.jku.app.dto.TaskCreateDto;
 import at.jku.app.dto.TaskResponseDto;
 import at.jku.app.dto.TaskUpdateDto;
+import at.jku.app.repository.TaskAssignmentRepository;
 import at.jku.app.entity.*;
 import at.jku.app.service.*;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +21,16 @@ public class TaskController {
     private final TaskService taskService;
     private final StatusHistoryService statusHistoryService;
     private final StatusService statusService;
+    private final TaskAssignmentRepository taskAssignmentRepository;
 
     public TaskController(TaskService taskService,
                           StatusHistoryService statusHistoryService,
-                          StatusService statusService) {
+                          StatusService statusService,
+                          TaskAssignmentRepository taskAssignmentRepository) {
         this.taskService = taskService;
         this.statusHistoryService = statusHistoryService;
         this.statusService = statusService;
+        this.taskAssignmentRepository = taskAssignmentRepository;
     }
 
     @GetMapping
@@ -61,6 +65,10 @@ public class TaskController {
         Status todo = statusService.getByName("To Do");
         statusHistoryService.changeStatus(saved, todo, user);
 
+        if (dto.assignedUserId != null) {
+            taskService.assignUser(saved.getId(), dto.assignedUserId);
+        }
+
         return toDto(saved);
     }
 
@@ -73,7 +81,13 @@ public class TaskController {
         task.setLastStepDesc(dto.lastStepDesc);
         task.setModifiedAt(LocalDateTime.now());
 
-        return toDto(taskService.updateTask(id, task));
+        Task updated = taskService.updateTask(id, task);
+
+        if (dto.assignedUserId != null) {
+            taskService.assignUser(id, dto.assignedUserId);
+        }
+
+        return toDto(updated);
     }
 
     @DeleteMapping("/{id}")
@@ -102,6 +116,13 @@ public class TaskController {
 
         Status currentStatus = taskService.getCurrentStatus(task.getId());
         dto.status = currentStatus != null ? currentStatus.getName() : "Unknown";
+
+        List<TaskAssignment> assignments = taskAssignmentRepository.findByTaskId(task.getId());
+        if (!assignments.isEmpty()) {
+            TaskAssignment assignment = assignments.get(0);
+            dto.assignedUserId = assignment.getAssignee().getId();
+            dto.assignedUserName = assignment.getAssignee().getName();
+        }
 
         dto.createdByName = null;
         return dto;

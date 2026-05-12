@@ -1,5 +1,4 @@
 <div class="task-list-container">
-
   <div class="list-header">
     <div class="search-wrapper">
       <input
@@ -13,9 +12,7 @@
       + Task hinzufügen
     </button>
   </div>
-
   <hr class="separator" />
-
   @if (filteredTasks.length > 0) {
     @for (task of filteredTasks; track task.id) {
       <div class="task-card">
@@ -23,21 +20,19 @@
         <div class="task-info-grid">
           <div class="info-label">Beschreibung</div>
           <div class="info-value desc-value">{{ task.description }}</div>
-
           <div class="info-label">Status</div>
           <div class="info-value">
             <span class="status-badge" [style.background]="getStatusColor(task.status)">
               {{ task.status }}
             </span>
           </div>
-
           <div class="info-label">Deadline</div>
           <div class="info-value">{{ task.deadline }}</div>
+          <div class="info-label">Zugewiesen an</div>
+          <div class="info-value">{{ task.assignedUserName ?? 'Nicht zugewiesen' }}</div>
         </div>
-
         <div class="card-actions">
           <button (click)="openEditTask(task)" class="btn-edit">Bearbeiten</button>
-          <!-- Dieser Button löst das Event aus, das in der Page-Komponente landet -->
           <button (click)="deleteTask(task.id)" class="btn-delete">Löschen</button>
         </div>
       </div>

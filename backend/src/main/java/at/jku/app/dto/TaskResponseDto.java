@@ -11,4 +11,6 @@ public class TaskResponseDto {
     public Long projectId;
 
     public String createdByName;
+    public Long assignedUserId;
+    public String assignedUserName;
 }
