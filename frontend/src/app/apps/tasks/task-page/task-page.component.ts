@@ -1,6 +1,7 @@
-import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskFormComponent } from '../task-form/task-form.component';
 import { KanbanBoardComponent } from '../kanban-board/kanban-board.component';
@@ -13,7 +14,7 @@ import { TaskService } from '../../../../services/task.service';
   imports: [CommonModule, FormsModule, TaskListComponent, TaskFormComponent, KanbanBoardComponent],
   templateUrl: './task-page.component.html'
 })
-export class TaskPageComponent {
+export class TaskPageComponent implements OnInit {
 
   showList = true;
   showKanban = false;
@@ -21,6 +22,7 @@ export class TaskPageComponent {
 
   searchTerm: string = '';
   refreshCounter: number = 0;
+  projectId: number | null = null;
 
   taskToEdit: Task | null = null;
 
@@ -35,8 +37,15 @@ export class TaskPageComponent {
 
   constructor(
     private taskService: TaskService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.projectId = params['projectId'] ? +params['projectId'] : null;
+    });
+  }
 
   toggleView(view: 'list' | 'kanban'): void {
     this.showList = view === 'list';
@@ -67,7 +76,6 @@ export class TaskPageComponent {
         }
       );
     } else {
-      // Refresh triggern
       this.refreshCounter++;
 
       if (this.kanbanComp) this.kanbanComp.loadData();
@@ -107,9 +115,7 @@ export class TaskPageComponent {
 
     setTimeout(() => {
       this.showDialog = false;
-
       this.resetToListView();
-
       this.cdr.detectChanges();
     }, 2000);
   }

@@ -30,8 +30,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   navigateToTask(task: Task): void {
-    // doesn't work because there is no task routing
-    // this.router.navigate(['/tasks', task.id]);
+    this.router.navigate(['/tasks'], { queryParams: { projectId: task.projectId } });
   }
 
   onProjectHover(event: MouseEvent, isHover: boolean): void {

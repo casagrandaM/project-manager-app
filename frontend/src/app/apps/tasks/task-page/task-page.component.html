@@ -17,6 +17,7 @@
       <app-task-list
         [refreshTrigger]="refreshCounter"
         [searchTerm]="searchTerm"
+        [projectId]="projectId"
         (create)="openForm()"
         (edit)="openEditForm($event)"
         (requestDelete)="requestDelete($event)">
@@ -26,6 +27,7 @@
     @if (showKanban) {
       <app-kanban-board
         [refreshTrigger]="refreshCounter"
+        [projectId]="projectId"
         (edit)="openEditForm($event)">
       </app-kanban-board>
     }
@@ -33,6 +35,7 @@
     @if (showForm) {
       <app-task-form
         [taskToEdit]="taskToEdit"
+        [projectId]="projectId"
         (close)="closeForm($event)"
         (showMessage)="handleFormMessage($event)">
       </app-task-form>
@@ -67,7 +70,6 @@
 
         @if (isConfirmDialog) {
           <div style="display: flex; gap: 12px; justify-content: center; margin-top: 10px;">
-            <!-- OK Button links, Abbrechen rechts -->
             <button (click)="closeDialog(true)" style="padding: 8px 20px; border-radius: 6px; border: none; background-color: #007bff; cursor: pointer; font-weight: bold; color: white;">OK</button>
             <button (click)="closeDialog(false)" style="padding: 8px 20px; border-radius: 6px; border: none; background-color: #d1d5db; cursor: pointer; font-weight: bold; color: #111;">Abbrechen</button>
           </div>
