@@ -72,6 +72,8 @@ public class TaskService {
 
     @Transactional
     public void deleteTask(Long id) {
+        List<TaskAssignment> assignments = taskAssignmentRepository.findByTaskId(id);
+        taskAssignmentRepository.deleteAll(assignments);
         statusHistoryService.deleteByTaskId(id);
         taskRepository.deleteById(id);
     }
