@@ -10,7 +10,8 @@ import { Project } from '../../../../models/project.model';
   selector: 'app-project-page',
   standalone: true,
   imports: [CommonModule, ProjectListComponent, ProjectFormComponent],
-  templateUrl: './project-page.component.html'
+  templateUrl: './project-page.component.html',
+  styleUrl: './project-page.component.css'
 })
 export class ProjectPageComponent {
   showForm = false;

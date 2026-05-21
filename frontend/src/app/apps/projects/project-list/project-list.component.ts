@@ -1,17 +1,19 @@
 import { Component, OnInit, EventEmitter, Output, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../../services/project.service';
 import { Project } from '../../../../models/project.model';
 
 @Component({
   selector: 'app-project-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './project-list.component.html',
   styleUrl: './project-list.component.css'
 })
 export class ProjectListComponent implements OnInit, OnChanges {
   projects: Project[] = [];
+  searchTerm = '';
 
   @Input() refreshTrigger: number = 0;
   @Output() create = new EventEmitter<void>();
@@ -38,8 +40,37 @@ export class ProjectListComponent implements OnInit, OnChanges {
     });
   }
 
+  get filteredProjects(): Project[] {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) return this.projects;
+    return this.projects.filter(p =>
+      p.title.toLowerCase().includes(term) ||
+      (p.description ?? '').toLowerCase().includes(term)
+    );
+  }
+
   formatDate(dateStr?: string): string {
     if (!dateStr) return '-';
     return new Date(dateStr).toLocaleDateString('de-AT');
+  }
+
+  getCardGradient(projectId: number): string {
+    const gradients = [
+      'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)',
+      'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+      'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+      'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+      'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)',
+      'linear-gradient(135deg, #1e3a8a 0%, #172554 100%)',
+    ];
+    let h = projectId;
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+    h = h ^ (h >>> 16);
+    return gradients[Math.abs(h) % gradients.length];
+  }
+
+  getInitial(title: string): string {
+    return title ? title.charAt(0).toUpperCase() : '?';
   }
 }

@@ -1,44 +1,63 @@
-<div style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;">
+<div class="detail-wrapper">
 
-  <!-- Projekt-Header -->
-  <div style="margin-bottom: 20px;">
-    <button (click)="goBack()" style="background: none; border: none; color: #007bff; cursor: pointer; font-size: 0.95rem; padding: 0; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
-      ← Zurück zu Projekten
-    </button>
+  <!-- ── Hero ── -->
+  @if (project) {
+    <div class="project-hero" [style.background]="getCardGradient(project.id)">
+      <button class="btn-back" (click)="goBack()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        Zurück zu Projekten
+      </button>
 
-    @if (project) {
-      <div style="background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
-        <h1 style="margin: 0 0 6px 0; color: #333; font-size: 1.7rem;">{{ project.title }}</h1>
-        @if (project.description) {
-          <p style="margin: 0 0 10px 0; color: #555; font-size: 1rem;">{{ project.description }}</p>
-        }
-        <p style="margin: 0; color: #999; font-size: 0.85rem;">Erstellt von: {{ project.createdByName || 'Unbekannt' }}</p>
+      <div class="hero-content">
+        <div class="hero-initial">{{ project.title.charAt(0).toUpperCase() }}</div>
+        <div class="hero-info">
+          <h1 class="hero-title">{{ project.title }}</h1>
+          @if (project.description) {
+            <p class="hero-desc">{{ project.description }}</p>
+          }
+          <p class="hero-meta">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            {{ project.createdByName || 'Unbekannt' }}
+          </p>
+        </div>
       </div>
-    }
-  </div>
+    </div>
+  }
 
-  <!-- Task-Bereich -->
+  <!-- ── View controls ── -->
   @if (!showForm) {
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-      <div style="display: flex; gap: 10px;">
-        <button (click)="toggleView('list')"
-          [style.background-color]="showList ? '#007bff' : '#e9ecef'"
-          [style.color]="showList ? 'white' : '#495057'"
-          style="border: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: 600;">
-          Listenansicht
+    <div class="view-controls">
+      <div class="view-toggle">
+        <button class="toggle-btn" [class.active]="showList" (click)="toggleView('list')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          Liste
         </button>
-        <button (click)="toggleView('kanban')"
-          [style.background-color]="showKanban ? '#007bff' : '#e9ecef'"
-          [style.color]="showKanban ? 'white' : '#495057'"
-          style="border: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: 600;">
-          Kanban Board
+        <button class="toggle-btn" [class.active]="showKanban" (click)="toggleView('kanban')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="18" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="18" rx="1"></rect>
+          </svg>
+          Kanban
         </button>
       </div>
     </div>
-    <hr style="border: 0; border-top: 2px solid #eee; margin: 0 0 20px 0;" />
+    <div class="view-divider"></div>
   }
 
-  <div style="text-align: left;">
+  <!-- ── Content ── -->
+  <div class="detail-content">
     @if (showList) {
       <app-task-list
         [projectId]="projectId"
@@ -68,28 +87,35 @@
     }
   </div>
 
-  <!-- DIALOG -->
+  <!-- ── Dialog ── -->
   @if (showDialog) {
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;">
-      <div style="background: white; padding: 28px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); min-width: 300px; max-width: 420px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-
+    <div class="dialog-backdrop">
+      <div class="dialog-box">
         @if (!isConfirmDialog && isSuccessDialog) {
-          <div style="width: 50px; height: 50px; background: #d4edda; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 30px; height: 30px;">
+          <div class="dialog-success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
         }
-
-        <p style="font-size: 16px; margin: 0; color: #333;">{{ dialogMessage }}</p>
-
         @if (isConfirmDialog) {
-          <div style="display: flex; gap: 12px;">
-            <button (click)="closeDialog(true)" style="padding: 8px 22px; border-radius: 6px; border: none; background: #007bff; cursor: pointer; font-weight: bold; color: white;">OK</button>
-            <button (click)="closeDialog(false)" style="padding: 8px 22px; border-radius: 6px; border: none; background: #d1d5db; cursor: pointer; font-weight: bold; color: #111;">Abbrechen</button>
+          <div class="dialog-warn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+        }
+        <p class="dialog-message">{{ dialogMessage }}</p>
+        @if (isConfirmDialog) {
+          <div class="dialog-actions">
+            <button class="dialog-btn-cancel" (click)="closeDialog(false)">Abbrechen</button>
+            <button class="dialog-btn-ok" (click)="closeDialog(true)">Bestätigen</button>
           </div>
         }
       </div>
     </div>
   }
+
 </div>

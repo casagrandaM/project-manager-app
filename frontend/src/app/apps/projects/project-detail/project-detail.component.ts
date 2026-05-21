@@ -14,7 +14,8 @@ import { Task } from '../../../../models/task.model';
   selector: 'app-project-detail',
   standalone: true,
   imports: [CommonModule, FormsModule, TaskListComponent, TaskFormComponent, KanbanBoardComponent],
-  templateUrl: './project-detail.component.html'
+  templateUrl: './project-detail.component.html',
+  styleUrl: './project-detail.component.css'
 })
 export class ProjectDetailComponent implements OnInit {
   project: Project | null = null;
@@ -53,7 +54,7 @@ export class ProjectDetailComponent implements OnInit {
 
   loadProject(): void {
     this.projectService.getProjectById(this.projectId).subscribe({
-      next: (p) => this.project = p,
+      next: (p) => { this.project = p; this.cdr.detectChanges(); },
       error: (err) => console.error(err)
     });
   }
@@ -152,6 +153,22 @@ export class ProjectDetailComponent implements OnInit {
       this.confirmCallback();
     }
     this.confirmCallback = null;
+  }
+
+  getCardGradient(projectId: number): string {
+    const gradients = [
+      'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)',
+      'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+      'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+      'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+      'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)',
+      'linear-gradient(135deg, #1e3a8a 0%, #172554 100%)',
+    ];
+    let h = projectId;
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+    h = h ^ (h >>> 16);
+    return gradients[Math.abs(h) % gradients.length];
   }
 
   resetToListView(): void {
