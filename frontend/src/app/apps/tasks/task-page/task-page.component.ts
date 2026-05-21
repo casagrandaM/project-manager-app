@@ -85,9 +85,11 @@ export class TaskPageComponent implements OnInit {
         ? 'Task erfolgreich aktualisiert!'
         : 'Task erfolgreich erstellt!';
 
-      this.showSuccessAlert(msg);
-
       this.taskToEdit = null;
+
+      // Zuerst zurück zur Liste, dann Dialog anzeigen
+      this.resetToListView();
+      this.showSuccessAlert(msg);
     }
   }
 
@@ -115,7 +117,6 @@ export class TaskPageComponent implements OnInit {
 
     setTimeout(() => {
       this.showDialog = false;
-      this.resetToListView();
       this.cdr.detectChanges();
     }, 2000);
   }
@@ -152,8 +153,6 @@ export class TaskPageComponent implements OnInit {
 
           if (this.taskListComp) this.taskListComp.loadTasks();
           if (this.kanbanComp) this.kanbanComp.loadData();
-
-          this.showSuccessAlert('Task erfolgreich gelöscht.');
         },
         error: (err) => {
           console.error('Fehler beim Löschen', err);
