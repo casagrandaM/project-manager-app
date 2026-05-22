@@ -324,6 +324,61 @@
   transform: scale(1.1);
 }
 
+/* ── Progress bar (card) ── */
+.card-progress {
+  margin-top: 14px;
+  margin-bottom: 2px;
+}
+
+.card-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.card-progress-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.card-progress-pct {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4f46e5;
+}
+
+.card-progress-pct.pct-done {
+  color: #16a34a;
+}
+
+.card-progress-track {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.card-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.card-progress-fill.fill-done {
+  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+}
+
+.card-progress-sub {
+  font-size: 0.73rem;
+  color: #94a3b8;
+  margin: 5px 0 0 0;
+}
+
 /* ── Arrow indicator ── */
 .card-arrow {
   position: absolute;

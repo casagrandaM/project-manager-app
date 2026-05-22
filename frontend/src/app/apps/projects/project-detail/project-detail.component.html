@@ -29,6 +29,97 @@
     </div>
   }
 
+  <!-- ── Progress ── -->
+  @if (!showForm && tasks.length > 0) {
+    <div class="progress-section">
+      <div class="progress-top">
+        <div class="progress-title-row">
+          <span class="progress-section-label">Projektfortschritt</span>
+          <span class="progress-section-pct" [class.pct-done]="taskProgress === 100">{{ taskProgress }}%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" [style.width.%]="taskProgress" [class.fill-done]="taskProgress === 100"></div>
+        </div>
+      </div>
+      <div class="progress-stats">
+        <div class="stat-chip stat-todo">
+          <span class="stat-dot dot-todo"></span>
+          <span class="stat-count">{{ taskToDoCount }}</span>
+          <span class="stat-label">Offen</span>
+        </div>
+        <div class="stat-chip stat-inprogress">
+          <span class="stat-dot dot-inprogress"></span>
+          <span class="stat-count">{{ taskInProgressCount }}</span>
+          <span class="stat-label">In Bearbeitung</span>
+        </div>
+        <div class="stat-chip stat-done">
+          <span class="stat-dot dot-done"></span>
+          <span class="stat-count">{{ taskDoneCount }}</span>
+          <span class="stat-label">Erledigt</span>
+        </div>
+        <div class="stat-chip stat-total">
+          <span class="stat-count">{{ tasks.length }}</span>
+          <span class="stat-label">Gesamt</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ── Activity ── -->
+  @if (!showForm && activityEvents.length > 0) {
+    <div class="activity-section">
+      <button class="activity-toggle" (click)="showActivity = !showActivity">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        Aktivität
+        <span class="activity-count">{{ activityEvents.length }}</span>
+        <svg class="activity-chevron" [class.rotated]="showActivity" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+
+      @if (showActivity) {
+        <div class="activity-feed">
+          @for (event of activityEvents; track $index) {
+            <div class="activity-item">
+              <div class="activity-dot" [class]="'dot-' + getActivityIcon(event.type)">
+                @if (event.type === 'TASK_CREATED') {
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                }
+                @if (event.type === 'STATUS_CHANGED') {
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                }
+                @if (event.type === 'TASK_ASSIGNED') {
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                }
+              </div>
+              <div class="activity-body">
+                <p class="activity-text">
+                  <span class="activity-user">{{ event.userName }}</span>
+                  — {{ event.detail }}
+                  @if (event.taskTitle) {
+                    <span class="activity-task">„{{ event.taskTitle }}"</span>
+                  }
+                </p>
+                <p class="activity-time">{{ formatActivityTime(event.timestamp) }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
   <!-- ── View controls ── -->
   @if (!showForm) {
     <div class="view-controls">
@@ -73,7 +164,8 @@
       <app-kanban-board
         [projectId]="projectId"
         [refreshTrigger]="refreshCounter"
-        (edit)="openEditForm($event)">
+        (edit)="openEditForm($event)"
+        (statusChanged)="loadTaskProgress(); loadActivity()">
       </app-kanban-board>
     }
 

@@ -18,6 +18,7 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
   @Input() projectId: number | null = null;
 
   @Output() edit = new EventEmitter<Task>();
+  @Output() statusChanged = new EventEmitter<void>();
 
   // Die drei Spalten
   todoTasks: Task[] = [];
@@ -115,8 +116,8 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
     if (newStatusId > 0) {
       this.taskService.changeTaskStatus(task.id, newStatusId).subscribe({
         next: () => {
-          console.log('Verschoben! Lade Board neu...');
           this.loadData();
+          this.statusChanged.emit();
         },
         error: (err) => {
           console.error('Move failed', err);

@@ -9,6 +9,7 @@ import { ProjectService } from '../../../../services/project.service';
 import { TaskService } from '../../../../services/task.service';
 import { Project } from '../../../../models/project.model';
 import { Task } from '../../../../models/task.model';
+import { ActivityEvent } from '../../../../models/activity-event.model';
 
 @Component({
   selector: 'app-project-detail',
@@ -20,6 +21,9 @@ import { Task } from '../../../../models/task.model';
 export class ProjectDetailComponent implements OnInit {
   project: Project | null = null;
   projectId!: number;
+  tasks: Task[] = [];
+  activityEvents: ActivityEvent[] = [];
+  showActivity = false;
 
   showList = true;
   showKanban = false;
@@ -57,6 +61,52 @@ export class ProjectDetailComponent implements OnInit {
       next: (p) => { this.project = p; this.cdr.detectChanges(); },
       error: (err) => console.error(err)
     });
+    this.loadTaskProgress();
+    this.loadActivity();
+  }
+
+  loadActivity(): void {
+    this.projectService.getProjectActivity(this.projectId).subscribe({
+      next: (events) => { this.activityEvents = events; this.cdr.detectChanges(); },
+      error: (err) => console.error(err)
+    });
+  }
+
+  getActivityIcon(type: string): string {
+    if (type === 'TASK_CREATED') return 'created';
+    if (type === 'STATUS_CHANGED') return 'status';
+    return 'assigned';
+  }
+
+  formatActivityTime(timestamp: string): string {
+    if (!timestamp) return '';
+    const d = new Date(timestamp);
+    return d.toLocaleDateString('de-AT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      + ', ' + d.toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  loadTaskProgress(): void {
+    this.taskService.getTasks(this.projectId).subscribe({
+      next: (tasks) => { this.tasks = tasks; this.cdr.detectChanges(); },
+      error: (err) => console.error(err)
+    });
+  }
+
+  get taskProgress(): number {
+    if (this.tasks.length === 0) return 0;
+    return Math.round((this.tasks.filter(t => t.status === 'Done').length / this.tasks.length) * 100);
+  }
+
+  get taskDoneCount(): number {
+    return this.tasks.filter(t => t.status === 'Done').length;
+  }
+
+  get taskToDoCount(): number {
+    return this.tasks.filter(t => t.status === 'To Do').length;
+  }
+
+  get taskInProgressCount(): number {
+    return this.tasks.filter(t => t.status === 'In Progress').length;
   }
 
   goBack(): void {
@@ -92,6 +142,8 @@ export class ProjectDetailComponent implements OnInit {
       this.refreshCounter++;
       if (this.kanbanComp) this.kanbanComp.loadData();
       if (this.taskListComp) this.taskListComp.loadTasks();
+      this.loadTaskProgress();
+      this.loadActivity();
       const msg = this.taskToEdit ? 'Task erfolgreich aktualisiert!' : 'Task erfolgreich erstellt!';
       this.showSuccessAlert(msg);
       this.taskToEdit = null;
@@ -113,6 +165,8 @@ export class ProjectDetailComponent implements OnInit {
           this.refreshCounter++;
           if (this.taskListComp) this.taskListComp.loadTasks();
           if (this.kanbanComp) this.kanbanComp.loadData();
+          this.loadTaskProgress();
+          this.loadActivity();
           this.showSuccessAlert('Task erfolgreich gelöscht.');
         },
         error: () => this.showErrorAlert('Fehler beim Löschen des Tasks.')

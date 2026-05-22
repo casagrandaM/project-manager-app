@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, Output, Input, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../../services/project.service';
+import { TaskService } from '../../../../services/task.service';
 import { Project } from '../../../../models/project.model';
 
 @Component({
@@ -14,6 +15,7 @@ import { Project } from '../../../../models/project.model';
 export class ProjectListComponent implements OnInit, OnChanges {
   projects: Project[] = [];
   searchTerm = '';
+  projectProgress: Map<number, { done: number; total: number }> = new Map();
 
   @Input() refreshTrigger: number = 0;
   @Output() create = new EventEmitter<void>();
@@ -21,15 +23,17 @@ export class ProjectListComponent implements OnInit, OnChanges {
   @Output() requestDelete = new EventEmitter<number>();
   @Output() select = new EventEmitter<Project>();
 
-  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef) {}
+  constructor(private projectService: ProjectService, private taskService: TaskService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadProjects();
+    this.loadTaskProgress();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['refreshTrigger'] && !changes['refreshTrigger'].firstChange) {
       this.loadProjects();
+      this.loadTaskProgress();
     }
   }
 
@@ -38,6 +42,34 @@ export class ProjectListComponent implements OnInit, OnChanges {
       next: (data) => { this.projects = data; this.cdr.detectChanges(); },
       error: (err) => console.error(err)
     });
+  }
+
+  loadTaskProgress(): void {
+    this.taskService.getTasks().subscribe({
+      next: (tasks) => {
+        const map = new Map<number, { done: number; total: number }>();
+        for (const task of tasks) {
+          if (task.projectId == null) continue;
+          const entry = map.get(task.projectId) ?? { done: 0, total: 0 };
+          entry.total++;
+          if (task.status === 'Done') entry.done++;
+          map.set(task.projectId, entry);
+        }
+        this.projectProgress = map;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  getProjectProgress(projectId: number): number {
+    const entry = this.projectProgress.get(projectId);
+    if (!entry || entry.total === 0) return 0;
+    return Math.round((entry.done / entry.total) * 100);
+  }
+
+  getProjectTaskCounts(projectId: number): { done: number; total: number } {
+    return this.projectProgress.get(projectId) ?? { done: 0, total: 0 };
   }
 
   get filteredProjects(): Project[] {

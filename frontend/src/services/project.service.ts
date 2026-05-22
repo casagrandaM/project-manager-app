@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Project, CreateProject, UpdateProject } from '../models/project.model';
+import { ActivityEvent } from '../models/activity-event.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -27,5 +28,9 @@ export class ProjectService {
 
   deleteProject(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  getProjectActivity(id: number): Observable<ActivityEvent[]> {
+    return this.http.get<ActivityEvent[]>(`${this.baseUrl}/${id}/activity`);
   }
 }

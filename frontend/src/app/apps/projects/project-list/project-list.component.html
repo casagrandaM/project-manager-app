@@ -90,6 +90,24 @@
             <p class="project-desc no-desc">Keine Beschreibung vorhanden</p>
           }
 
+          <div class="card-progress">
+            <div class="card-progress-header">
+              <span class="card-progress-label">Fortschritt</span>
+              <span class="card-progress-pct" [class.pct-done]="getProjectProgress(project.id) === 100">
+                {{ getProjectProgress(project.id) }}%
+              </span>
+            </div>
+            <div class="card-progress-track">
+              <div class="card-progress-fill"
+                [style.width.%]="getProjectProgress(project.id)"
+                [class.fill-done]="getProjectProgress(project.id) === 100">
+              </div>
+            </div>
+            <p class="card-progress-sub">
+              {{ getProjectTaskCounts(project.id).done }} / {{ getProjectTaskCounts(project.id).total }} Tasks erledigt
+            </p>
+          </div>
+
           <div class="card-footer">
             <p class="project-date">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
