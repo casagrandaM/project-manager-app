@@ -4,12 +4,19 @@ import { ProjectPageComponent } from './apps/projects/project-page/project-page.
 import { ProjectDetailComponent } from './apps/projects/project-detail/project-detail.component';
 import {UserProfileComponent} from './apps/users/user-profile/user-profile.component';
 import {UserEditComponent} from './apps/users/user-edit/user-edit.component';
+import {OAuthCallbackComponent} from '../auth/oauth-callback.component';
+import {authGuard} from '../auth/auth.guard';
+import {LoginComponent} from '../auth/login/login.component';
+import {RegisterComponent} from '../auth/register/register.component';
 
 export const routes: Routes = [
-  { path: 'user/1/edit', component: UserEditComponent },
-  { path: 'user/1', component: UserProfileComponent },
-  { path: 'projects', component: ProjectPageComponent },
-  { path: 'projects/:id', component: ProjectDetailComponent },
-  { path: 'tasks', component: TaskPageComponent },
-  { path: '', redirectTo: 'user/1', pathMatch: 'full' }
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'oauth/callback', component: OAuthCallbackComponent },
+  { path: 'user/edit', component: UserEditComponent, canActivate: [authGuard] },
+  { path: 'user/profile', component: UserProfileComponent, canActivate: [authGuard] },
+  { path: 'projects', component: ProjectPageComponent, canActivate: [authGuard] },
+  { path: 'projects/:id', component: ProjectDetailComponent, canActivate: [authGuard] },
+  { path: 'tasks', component: TaskPageComponent, canActivate: [authGuard] },
+  { path: '', redirectTo: 'user/profile', pathMatch: 'full' }
 ];

@@ -1,52 +1,52 @@
-package at.jku.app.controller;
+package at.jku.app.security;
 
-import at.jku.app.dto.*;
+import at.jku.app.dto.ProjectResponseDto;
+import at.jku.app.dto.RoleDto;
+import at.jku.app.dto.TaskResponseDto;
+import at.jku.app.dto.UserDto;
 import at.jku.app.entity.*;
+import at.jku.app.security.data.AppUserPrincipal;
+import at.jku.app.security.dto.AuthResponse;
+import at.jku.app.security.dto.LoginRequest;
+import at.jku.app.security.dto.RegisterRequest;
+import at.jku.app.security.service.AuthService;
 import at.jku.app.service.ProjectService;
 import at.jku.app.service.TaskService;
 import at.jku.app.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
-public class UserController {
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class AuthController {
+	
+	private final AuthService authService;
 	
 	private final UserService userService;
 	private final ProjectService projectService;
 	private final TaskService taskService;
 	
-	public UserController(UserService userService, ProjectService projectService, TaskService taskService) {
-		this.userService = userService;
-		this.projectService = projectService;
-		this.taskService = taskService;
+	@PostMapping("/register")
+	public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+		return ResponseEntity.ok(authService.register(request));
 	}
 	
-	@GetMapping
-	public List<UserDto> getAllUsers() {
-		List<User> users = userService.getAllUsers();
-		List<UserDto> userDtos = new ArrayList<>();
-		
-		for (User user : users) {
-			userDtos.add(toUserDto(user.getId()));
-		}
-		
-		return userDtos;
+	@PostMapping("/login")
+	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+		return ResponseEntity.ok(authService.login(request));
 	}
 	
-	@GetMapping("/{id}")
-	public UserDto getUser(@PathVariable Long id) {
-		return toUserDto(id);
-	}
-	
-	@PutMapping("/{id}")
-	public UserDto updateUser(@PathVariable Long id, @RequestBody UserUpdateDto newData) {
-		userService.updateUser(id, newData.name(), newData.email());
-		return toUserDto(id);
+	@GetMapping("/me")
+	public UserDto me(Authentication authentication) {
+		AppUserPrincipal principal = (AppUserPrincipal) authentication.getPrincipal();
+		User user = principal.getUser();
+		return toUserDto(user.getId());
 	}
 	
 	private UserDto toUserDto(Long id) {
@@ -80,7 +80,7 @@ public class UserController {
 			if (project.getCreatedBy() != null) {
 				dto.createdById = project.getCreatedBy().getId();
 				dto.createdByName = project.getCreatedBy().getName();
-				dto.isOwner = project.getCreatedBy().getId().equals(userService.getCurrentUser().getId());
+				dto.isOwner = project.getCreatedBy().getId().equals(1L);
 			}
 			projectResponseDtos.add(dto);
 		}

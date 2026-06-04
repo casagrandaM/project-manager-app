@@ -24,7 +24,7 @@ CREATE TABLE users (
                        email        VARCHAR(254) NOT NULL UNIQUE,
                        role_id      BIGINT REFERENCES roles(id),
                        created_at   timestamptz NOT NULL,
-                       auth_data    TEXT
+                       password     VARCHAR(255)
 );
 
 CREATE TABLE projects (

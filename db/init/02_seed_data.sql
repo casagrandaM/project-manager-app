@@ -11,17 +11,17 @@ INSERT INTO roles (code, name) VALUES
 -- ========================================
 -- USERS
 -- ========================================
-INSERT INTO users (name, email, role_id, created_at, auth_data)
+INSERT INTO users (name, email, role_id, created_at, password)
 VALUES
     ('Admin User', 'admin@task.com',
      (SELECT id FROM roles WHERE code = 1),
      NOW(),
-     NULL),
+     '$2a$10$6qS6MUjya9w2k5HoihzcYOLhWi4kiCM3LpBcNtOBeirF2eKMp7BMu'), -- hash for password 'admin123'
 
     ('Test User', 'user@task.com',
      (SELECT id FROM roles WHERE code = 2),
      NOW(),
-     NULL)
+     '$2a$10$5KPiAFLH3HfRChEzGmtvQuCtr392Q7SasXaQwELgqUs4sFHjvVWuW') -- hash for password 'user123'
     ON CONFLICT (email) DO NOTHING;
 
 -- ========================================

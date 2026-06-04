@@ -27,7 +27,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @Column
-    private String authData;
+    private String password;
 
 
 }

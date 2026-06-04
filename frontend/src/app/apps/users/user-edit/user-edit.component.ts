@@ -14,7 +14,7 @@ import {UserService} from '../../../../services/user.service';
 })
 export class UserEditComponent implements OnInit {
 
-  user$!: Observable<User>;
+  user!: User;
 
   formData = {
     name: '',
@@ -25,19 +25,12 @@ export class UserEditComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
 
-  constructor(
-    private userService: UserService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private userService: UserService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.user$ = this.userService.getUser(1).pipe(
-      tap(user => {
-        this.formData.name = user.name;
-        this.formData.email = user.email;
-      })
-    );
+    this.user = this.userService.getCurrentUser()
+    this.formData.name = this.user.name;
+    this.formData.email = this.user.email;
   }
 
   save(): void {
@@ -65,7 +58,7 @@ export class UserEditComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/user/1']);
+    this.router.navigate(['/user/profile']);
   }
 
   onFocus(event: FocusEvent): void {
