@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {User} from '../../../../models/user.model';
 import {Router, RouterLink} from '@angular/router';
 import {UserService} from '../../../../services/user.service';
@@ -17,10 +17,16 @@ import {AuthService} from '../../../../auth/auth.service';
 export class UserProfileComponent implements OnInit {
   user?: User;
 
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.user = this.userService.getCurrentUser();
+    this.authService.loadCurrentUser().subscribe({
+      next: user => {
+        this.user = user;
+        this.cdr.detectChanges();
+      },
+      error: err => console.error('failed to load current user', err)
+    });
   }
 
   navigateToProject(project: Project): void {
@@ -29,6 +35,12 @@ export class UserProfileComponent implements OnInit {
 
   navigateToTask(task: Task): void {
     this.router.navigate(['/tasks'], { queryParams: { projectId: task.projectId } });
+  }
+
+  getOpenTaskCount(user: User): number {
+    return (user.tasks ?? []).filter(
+      t => t.status === 'OPEN' || t.status === 'IN_PROGRESS'
+    ).length;
   }
 
   onProjectHover(event: MouseEvent, isHover: boolean): void {

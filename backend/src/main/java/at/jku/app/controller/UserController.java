@@ -5,6 +5,7 @@ import at.jku.app.entity.*;
 import at.jku.app.service.ProjectService;
 import at.jku.app.service.TaskService;
 import at.jku.app.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -47,6 +48,14 @@ public class UserController {
 	public UserDto updateUser(@PathVariable Long id, @RequestBody UserUpdateDto newData) {
 		userService.updateUser(id, newData.name(), newData.email());
 		return toUserDto(id);
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@DeleteMapping("/{id}")
+	public UserDto deleteUser(@PathVariable Long id) {
+		UserDto dto = toUserDto(id);
+		userService.deleteUser(id);
+		return dto;
 	}
 	
 	private UserDto toUserDto(Long id) {

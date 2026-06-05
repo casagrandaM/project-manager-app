@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {RouterOutlet, RouterLink, RouterLinkActive, Router} from '@angular/router';
 import {AuthService} from '../auth/auth.service';
 
@@ -10,22 +10,26 @@ import {AuthService} from '../auth/auth.service';
 })
 export class App {
   constructor(
-    private authService: AuthService,
+    protected authService: AuthService,
     private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-
     if (this.authService.isLoggedIn()) {
 
       this.authService
         .loadCurrentUser()
-        .subscribe();
+        .subscribe(() => this.cdr.detectChanges());
     }
   }
 
   showNavbar(): boolean {
     return !['/login', '/register'].includes(this.router.url);
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
   }
 
   logout(): void {

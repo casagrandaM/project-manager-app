@@ -38,7 +38,9 @@ export class AuthService {
 
   loadCurrentUser(): Observable<User> {
     return this.fetchCurrentUser().pipe(
-      tap(user => this.currentUser = user)
+      tap(user => {
+        this.currentUser = user
+      })
     );
   }
 

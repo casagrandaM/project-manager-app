@@ -8,6 +8,7 @@ import {OAuthCallbackComponent} from '../auth/oauth-callback.component';
 import {authGuard} from '../auth/auth.guard';
 import {LoginComponent} from '../auth/login/login.component';
 import {RegisterComponent} from '../auth/register/register.component';
+import {UserListComponent} from './apps/users/user-list/user-list.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'projects', component: ProjectPageComponent, canActivate: [authGuard] },
   { path: 'projects/:id', component: ProjectDetailComponent, canActivate: [authGuard] },
   { path: 'tasks', component: TaskPageComponent, canActivate: [authGuard] },
+  { path: 'users', component: UserListComponent, canActivate: [authGuard] },
   { path: '', redirectTo: 'user/profile', pathMatch: 'full' }
 ];
