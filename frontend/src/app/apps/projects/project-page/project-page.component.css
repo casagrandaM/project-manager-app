@@ -1,0 +1,183 @@
+.page-wrapper {
+  min-height: calc(100vh - 52px);
+  background: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Decorations ── */
+.deco {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.deco-left  { left: 0; }
+.deco-right { right: 0; }
+
+.deco-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+}
+
+.deco-blob-1 {
+  width: 260px;
+  height: 260px;
+  top: 60px;
+  left: -80px;
+  background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+}
+
+.deco-blob-2 {
+  width: 180px;
+  height: 180px;
+  top: 340px;
+  left: 20px;
+  background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
+}
+
+.deco-blob-3 {
+  width: 240px;
+  height: 240px;
+  top: 80px;
+  right: -60px;
+  background: radial-gradient(circle, rgba(14,165,233,0.16) 0%, transparent 70%);
+}
+
+.deco-blob-4 {
+  width: 160px;
+  height: 160px;
+  top: 380px;
+  right: 10px;
+  background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+}
+
+/* Dot grid pattern */
+.deco-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.45;
+  mask-image: linear-gradient(to right, transparent, rgba(0,0,0,0.6), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,0.6), transparent);
+}
+
+/* Ensure content sits above decorations */
+app-project-list,
+app-project-form {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Dialog ── */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.dialog-box {
+  background: white;
+  padding: 36px 32px 28px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  min-width: 320px;
+  max-width: 440px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.dialog-success-icon {
+  width: 54px;
+  height: 54px;
+  background: #f0fdf4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-success-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.dialog-warn-icon {
+  width: 54px;
+  height: 54px;
+  background: #fffbeb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-warn-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.dialog-message {
+  font-size: 0.95rem;
+  color: #374151;
+  margin: 0;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.dialog-btn-cancel {
+  padding: 9px 22px;
+  border-radius: 10px;
+  border: 1.5px solid #e5e7eb;
+  background: white;
+  color: #6b7280;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.dialog-btn-cancel:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.dialog-btn-ok {
+  padding: 9px 22px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.35);
+  transition: all 0.15s;
+}
+
+.dialog-btn-ok:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.45);
+}
