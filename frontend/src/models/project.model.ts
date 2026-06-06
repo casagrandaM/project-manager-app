@@ -17,11 +17,3 @@ export interface UpdateProject {
   title: string;
   description?: string;
 }
-
-export interface ActivityEvent {
-  type: string;         // TASK_CREATED, STATUS_CHANGED, TASK_ASSIGNED
-  timestamp: string;
-  userName: string;
-  taskTitle: string;
-  detail: string;
-}

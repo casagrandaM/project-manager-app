@@ -7,14 +7,16 @@ import { TaskFormComponent } from '../../tasks/task-form/task-form.component';
 import { KanbanBoardComponent } from '../../tasks/kanban-board/kanban-board.component';
 import { ProjectService } from '../../../../services/project.service';
 import { TaskService } from '../../../../services/task.service';
-import {ActivityEvent, Project} from '../../../../models/project.model';
+import {Project} from '../../../../models/project.model';
 import { Task } from '../../../../models/task.model';
+import {ActivityEvent} from '../../../../models/activity-event.model';
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
   imports: [CommonModule, FormsModule, TaskListComponent, TaskFormComponent, KanbanBoardComponent],
   templateUrl: './project-detail.component.html',
+  styleUrl: './project-detail.component.css'
 })
 export class ProjectDetailComponent implements OnInit {
   project: Project | null = null;
