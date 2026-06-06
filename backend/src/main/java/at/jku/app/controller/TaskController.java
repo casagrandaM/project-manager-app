@@ -21,16 +21,19 @@ public class TaskController {
     private final TaskService taskService;
     private final StatusHistoryService statusHistoryService;
     private final StatusService statusService;
+    private final UserService userService;
     private final TaskAssignmentRepository taskAssignmentRepository;
 
     public TaskController(TaskService taskService,
                           StatusHistoryService statusHistoryService,
                           StatusService statusService,
+                          UserService userService,
                           TaskAssignmentRepository taskAssignmentRepository) {
         this.taskService = taskService;
         this.statusHistoryService = statusHistoryService;
         this.statusService = statusService;
-        this.taskAssignmentRepository = taskAssignmentRepository;
+		this.userService = userService;
+		this.taskAssignmentRepository = taskAssignmentRepository;
     }
 
     @GetMapping
@@ -54,8 +57,7 @@ public class TaskController {
             task.setProject(project);
         }
 
-        User user = new User();
-        user.setId(1L);
+        User user = userService.getCurrentUser();
         task.setCreatedBy(user);
         task.setCreatedAt(LocalDateTime.now());
 
@@ -100,8 +102,7 @@ public class TaskController {
         Task task = taskService.getTaskById(taskId);
         Status status = statusService.getById(statusId);
 
-        User user = new User();
-        user.setId(1L);
+        User user = userService.getCurrentUser();
 
         statusHistoryService.changeStatus(task, status, user);
     }

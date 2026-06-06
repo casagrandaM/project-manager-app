@@ -94,7 +94,7 @@ export class TaskFormComponent implements OnInit {
       });
     }
 
-    this.userService.getUsers().subscribe({
+    this.userService.getAllUsers().subscribe({
       next: (data) => {
         this.users = data;
         this.cdr.detectChanges();
@@ -135,7 +135,7 @@ export class TaskFormComponent implements OnInit {
         description: this.task.description,
         deadline: this.task.deadline,
         projectId: this.task.projectId!,
-        createdById: 1,
+        createdById: this.userService.getCurrentUser().id,
         assignedUserId: this.task.assignedUserId
       };
       this.taskService.createTask(dto).subscribe({

@@ -5,6 +5,7 @@ import at.jku.app.entity.*;
 import at.jku.app.service.ProjectService;
 import at.jku.app.service.TaskService;
 import at.jku.app.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -15,8 +16,6 @@ import java.util.Map;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
 public class UserController {
-	
-	private static final Long CURRENT_USER_ID = 1L;
 	
 	private final UserService userService;
 	private final ProjectService projectService;
@@ -51,6 +50,14 @@ public class UserController {
 		return toUserDto(id);
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
+	@DeleteMapping("/{id}")
+	public UserDto deleteUser(@PathVariable Long id) {
+		UserDto dto = toUserDto(id);
+		userService.deleteUser(id);
+		return dto;
+	}
+	
 	private UserDto toUserDto(Long id) {
 		User user = userService.getById(id);
 		List<Project> userProjects = projectService.getProjectsForUser(id);
@@ -82,7 +89,7 @@ public class UserController {
 			if (project.getCreatedBy() != null) {
 				dto.createdById = project.getCreatedBy().getId();
 				dto.createdByName = project.getCreatedBy().getName();
-				dto.isOwner = project.getCreatedBy().getId().equals(CURRENT_USER_ID);
+				dto.isOwner = project.getCreatedBy().getId().equals(userService.getCurrentUser().getId());
 			}
 			projectResponseDtos.add(dto);
 		}

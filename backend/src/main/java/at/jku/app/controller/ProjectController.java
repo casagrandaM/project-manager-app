@@ -12,6 +12,7 @@ import at.jku.app.repository.StatusHistoryRepository;
 import at.jku.app.repository.TaskAssignmentRepository;
 import at.jku.app.repository.TaskRepository;
 import at.jku.app.service.ProjectService;
+import at.jku.app.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,24 +27,26 @@ import java.util.stream.Collectors;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final UserService userService;
     private final TaskRepository taskRepository;
     private final StatusHistoryRepository statusHistoryRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
-    private static final Long CURRENT_USER_ID = 1L;
 
     public ProjectController(ProjectService projectService,
+                             UserService userService,
                              TaskRepository taskRepository,
                              StatusHistoryRepository statusHistoryRepository,
                              TaskAssignmentRepository taskAssignmentRepository) {
         this.projectService = projectService;
-        this.taskRepository = taskRepository;
+		this.userService = userService;
+		this.taskRepository = taskRepository;
         this.statusHistoryRepository = statusHistoryRepository;
         this.taskAssignmentRepository = taskAssignmentRepository;
     }
 
     @GetMapping
     public List<ProjectResponseDto> getProjects() {
-        return projectService.getProjectsForUser(CURRENT_USER_ID)
+        return projectService.getProjectsForUser(userService.getCurrentUser().getId())
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -56,14 +59,14 @@ public class ProjectController {
 
     @PostMapping
     public ProjectResponseDto createProject(@RequestBody ProjectCreateDto dto) {
-        Project project = projectService.createProject(dto.title, dto.description, CURRENT_USER_ID);
+        Project project = projectService.createProject(dto.title, dto.description, userService.getCurrentUser().getId());
         return toDto(project);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProject(@PathVariable Long id, @RequestBody ProjectUpdateDto dto) {
         try {
-            Project project = projectService.updateProject(id, dto.title, dto.description, CURRENT_USER_ID);
+            Project project = projectService.updateProject(id, dto.title, dto.description, userService.getCurrentUser().getId());
             return ResponseEntity.ok(toDto(project));
         } catch (RuntimeException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -73,7 +76,7 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         try {
-            projectService.deleteProject(id, CURRENT_USER_ID);
+            projectService.deleteProject(id, userService.getCurrentUser().getId());
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -129,7 +132,7 @@ public class ProjectController {
         if (project.getCreatedBy() != null) {
             dto.createdById = project.getCreatedBy().getId();
             dto.createdByName = project.getCreatedBy().getName();
-            dto.isOwner = project.getCreatedBy().getId().equals(CURRENT_USER_ID);
+            dto.isOwner = project.getCreatedBy().getId().equals(userService.getCurrentUser().getId());
         }
         return dto;
     }

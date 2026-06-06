@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {User} from '../../../../models/user.model';
 import {Router, RouterLink} from '@angular/router';
 import {UserService} from '../../../../services/user.service';
@@ -6,23 +6,27 @@ import {Project} from '../../../../models/project.model';
 import {Task} from '../../../../models/task.model';
 import {AsyncPipe, DatePipe} from '@angular/common';
 import {Observable} from 'rxjs';
+import {AuthService} from '../../../../auth/auth.service';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [DatePipe, AsyncPipe, RouterLink],
+  imports: [DatePipe, RouterLink],
   templateUrl: 'user-profile.component.html'
 })
 export class UserProfileComponent implements OnInit {
-  user$!: Observable<User>;
+  user?: User;
 
-  constructor(
-    private router: Router,
-    private userService: UserService
-  ) {}
+  constructor(private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.user$ = this.userService.getUser(1);
+    this.authService.loadCurrentUser().subscribe({
+      next: user => {
+        this.user = user;
+        this.cdr.detectChanges();
+      },
+      error: err => console.error('failed to load current user', err)
+    });
   }
 
   navigateToProject(project: Project): void {
@@ -31,6 +35,12 @@ export class UserProfileComponent implements OnInit {
 
   navigateToTask(task: Task): void {
     this.router.navigate(['/tasks'], { queryParams: { projectId: task.projectId } });
+  }
+
+  getOpenTaskCount(user: User): number {
+    return (user.tasks ?? []).filter(
+      t => t.status === 'OPEN' || t.status === 'IN_PROGRESS'
+    ).length;
   }
 
   onProjectHover(event: MouseEvent, isHover: boolean): void {
@@ -45,30 +55,10 @@ export class UserProfileComponent implements OnInit {
     el.style.borderColor = isHover ? '#bbf7d0' : 'transparent';
   }
 
-  getStatusColor(status?: string): { bg: string; text: string; icon: string } {
-    switch (status?.toUpperCase()) {
-      case 'DONE':
-        return { bg: '#f0fdf4', text: '#15803d', icon: '#16a34a' };
-      case 'IN_PROGRESS':
-        return { bg: '#eff6ff', text: '#1d4ed8', icon: '#2563eb' };
-      case 'REVIEW':
-        return { bg: '#fdf4ff', text: '#7e22ce', icon: '#9333ea' };
-      case 'BLOCKED':
-        return { bg: '#fff1f2', text: '#be123c', icon: '#e11d48' };
-      case 'OPEN':
-      default:
-        return { bg: '#fefce8', text: '#a16207', icon: '#ca8a04' };
-    }
-  }
-
-  getStatusLabel(status?: string): string {
-    switch (status?.toUpperCase()) {
-      case 'DONE':        return 'Erledigt';
-      case 'IN_PROGRESS': return 'In Bearbeitung';
-      case 'REVIEW':      return 'Review';
-      case 'BLOCKED':     return 'Blockiert';
-      case 'OPEN':
-      default:            return 'Offen';
-    }
+  getStatusColor(status: string | undefined): string {
+    if (status === 'To Do') return '#d9534f';
+    if (status === 'In Progress') return '#f0ad4e';
+    if (status === 'Done') return '#5cb85c';
+    return '#333';
   }
 }

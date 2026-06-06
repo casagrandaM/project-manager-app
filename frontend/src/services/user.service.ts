@@ -2,22 +2,31 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {User} from '../models/user.model';
+import {AuthService} from '../auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private baseUrl = 'http://localhost:8080/api/users';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  getUser(userId: number): Observable<User> {
+  getCurrentUser(): User {
+    return <User>this.authService.getCurrentUser();
+  }
+
+  getUserById(userId: number): Observable<User> {
     return this.http.get<User>(`${this.baseUrl}/${userId}`);
   }
 
-  getUsers(): Observable<User[]> {
+  getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.baseUrl);
   }
 
   updateUser(id: number, data: { name: string; email: string }): Observable<User> {
     return this.http.put<User>(`${this.baseUrl}/${id}`, data);
+  }
+
+  deleteUser(id: number): Observable<User> {
+    return this.http.delete<User>(`${this.baseUrl}/${id}`);
   }
 }

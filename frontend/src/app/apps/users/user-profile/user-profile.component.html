@@ -1,4 +1,4 @@
-@if (user$ | async; as user) {  <div style="min-height: 100vh; background: #f4f6fb; font-family: 'Segoe UI', sans-serif; padding: 0;">
+@if (user) {  <div style="min-height: 100vh; background: #f4f6fb; font-family: 'Segoe UI', sans-serif; padding: 0;">
     <!-- HEADER BANNER -->
     <div style="background: linear-gradient(135deg, #1a2a6c 0%, #2563eb 60%, #38bdf8 100%); padding: 48px 40px 36px 40px; position: relative; overflow: hidden;">
       <!-- Decorative circle -->
@@ -14,7 +14,7 @@
           Rolle: <strong style="color: #e0f2fe;">{{ user.role.name }}</strong>
           &nbsp;·&nbsp; Dabei seit {{ user.createdAt | date:'dd.MM.yyyy' }}
         </p>
-        <a routerLink="/user/1/edit" style="font-size: 1rem; color: white;">Profil bearbeiten</a>
+        <a routerLink="/user/edit" style="font-size: 1rem; color: white;">Profil bearbeiten</a>
       </div>
     </div>
 
@@ -146,8 +146,8 @@
               (mouseleave)="onTaskHover($event, false)">
 
               <div style="width: 38px; height: 38px; min-width: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
-                   [style.background]="getStatusColor(task.status).bg">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" [attr.stroke]="getStatusColor(task.status).icon" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                   [style.background]="getStatusColor(task.status)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="9 11 12 14 22 4"/>
                   <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                 </svg>
@@ -157,8 +157,8 @@
                 <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                   <p style="margin: 0; font-size: 0.95rem; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">{{ task.title }}</p>
                   @if (task.status) {
-                    <span [style.background]="getStatusColor(task.status).bg" [style.color]="getStatusColor(task.status).text" style="font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; white-space: nowrap;">
-                      {{ getStatusLabel(task.status) }}
+                    <span [style.background]="getStatusColor(task.status)" style="font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; white-space: nowrap;">
+                      {{ task.status }}
                     </span>
                   }
                 </div>
