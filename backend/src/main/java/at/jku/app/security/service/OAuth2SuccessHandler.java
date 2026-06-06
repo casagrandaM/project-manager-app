@@ -34,7 +34,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		
 		String jwt = authService.loginWithOAuth(userInfo).token();
 		
-		response.sendRedirect("http://localhost:4200/oauth/callback?token=" + jwt);
+		response.sendRedirect("http://localhost:4200/oauth/callback?jwt=" + jwt);
 	}
 	
 	private OAuthUserInfo createUserInfo(AuthProvider provider, OAuth2AuthenticationToken token, OAuth2User oauthUser) {
