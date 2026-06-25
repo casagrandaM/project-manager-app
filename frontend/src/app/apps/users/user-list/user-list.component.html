@@ -1,7 +1,7 @@
 @if (authService.getCurrentUser()?.role?.name === 'ADMIN') {
   <div style="max-width: 480px; margin: 48px auto; padding: 0 24px;">
     <h1 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin: 0 0 16px 0;">
-      Benutzer verwalten
+      Liste aller Nutzer der App
     </h1>
 
     @if (users.length > 0) {
@@ -11,14 +11,6 @@
             <p style="margin: 0; font-weight: 600; color: #1e293b;">{{ user.name }}</p>
             <p style="margin: 2px 0 0 0; font-size: 0.88rem; color: #475569;">{{ user.email }}</p>
           </div>
-
-          @if (authService.getCurrentUser()?.id !== user.id) {
-            <button
-              (click)="deleteUser(user.id)"
-              style="padding: 6px 12px; background: #dc2626; color: white; border: none; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer;">
-              Löschen
-            </button>
-          }
         </div>
       }
     } @else {
@@ -27,11 +19,6 @@
       </p>
     }
 
-    @if (successMessage) {
-      <p style="margin: 16px 0 0 0; color: #16a34a; font-size: 0.88rem; font-weight: 500; text-align: center;">
-        {{ successMessage }}
-      </p>
-    }
     @if (errorMessage) {
       <p style="margin: 16px 0 0 0; color: #dc2626; font-size: 0.88rem; font-weight: 500; text-align: center;">
         {{ errorMessage }}

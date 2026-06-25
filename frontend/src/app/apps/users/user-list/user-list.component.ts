@@ -16,7 +16,6 @@ import {AuthService} from '../../../../auth/auth.service';
 })
 export class UserListComponent {
   users: User[] = [];
-  successMessage: string = '';
   errorMessage: string = '';
 
   constructor(private userService: UserService, protected authService: AuthService, private cdr: ChangeDetectorRef) {}
@@ -38,22 +37,6 @@ export class UserListComponent {
         this.cdr.detectChanges();
       },
       error: () => this.errorMessage = 'Fehler beim Laden der Benutzer.'
-    });
-  }
-
-  /**
-   * Deletes a user by ID and updates the local list.
-   *
-   * @param id The user ID
-   */
-  deleteUser(id: number) {
-    this.userService.deleteUser(id).subscribe({
-      next: () => {
-        this.users = this.users.filter(u => u.id !== id);
-        this.successMessage = 'Benutzer erfolgreich gelöscht.';
-        this.cdr.detectChanges();
-      },
-      error: () => this.errorMessage = 'Fehler beim Löschen des Benutzers.'
     });
   }
 }

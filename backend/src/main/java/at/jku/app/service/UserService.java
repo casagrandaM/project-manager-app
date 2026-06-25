@@ -103,15 +103,4 @@ public class UserService {
         user.setEmail(email);
         userRepository.save(user);
     }
-
-    /**
-     * Deletes a user and removes all associated project memberships and task assignments.
-     *
-     * @param id The user ID
-     */
-    public void deleteUser(Long id) {
-        projectMemberRepository.deleteAll(projectMemberRepository.findByUserId(id));
-        taskAssignmentRepository.deleteAll(taskAssignmentRepository.findByAssigneeId(id));
-        userRepository.deleteById(id);
-    }
 }

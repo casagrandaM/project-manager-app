@@ -72,20 +72,6 @@ public class UserController {
 	}
 
 	/**
-	 * Deletes a user (requires administrator privileges).
-	 *
-	 * @param id The user ID
-	 * @return The deleted user as {@link UserDto}
-	 */
-	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("/{id}")
-	public UserDto deleteUser(@PathVariable Long id) {
-		UserDto dto = toUserDto(id);
-		userService.deleteUser(id);
-		return dto;
-	}
-
-	/**
 	 * Creates a {@link UserDto} including projects, tasks, and role information.
 	 *
 	 * @param id The user ID

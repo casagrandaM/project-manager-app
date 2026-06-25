@@ -53,14 +53,4 @@ export class UserService {
   updateUser(id: number, data: { name: string; email: string }): Observable<User> {
     return this.http.put<User>(`${this.baseUrl}/${id}`, data);
   }
-
-  /**
-   * Deletes a user by their ID.
-   *
-   * @param id The user ID
-   * @return An observable emitting the deleted user
-   */
-  deleteUser(id: number): Observable<User> {
-    return this.http.delete<User>(`${this.baseUrl}/${id}`);
-  }
 }
