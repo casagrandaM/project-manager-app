@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a system user.
+ */
 @Entity
 @Data
 @Table(name = "users")
@@ -28,6 +31,5 @@ public class User {
 
     @Column
     private String password;
-
 
 }

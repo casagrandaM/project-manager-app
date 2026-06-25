@@ -21,6 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * REST controller for authentication and retrieving the currently authenticated user.
+ * <p>
+ * Provides endpoints for user registration, login, and fetching the current user profile.
+ */
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -31,24 +36,48 @@ public class AuthController {
 	private final UserService userService;
 	private final ProjectService projectService;
 	private final TaskService taskService;
-	
+
+	/**
+	 * Registers a new user, logs them in and returns an authentication response.
+	 *
+	 * @param request The registration request containing user credentials
+	 * @return The authentication response containing a JWT token
+	 */
 	@PostMapping("/register")
 	public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
 		return ResponseEntity.ok(authService.register(request));
 	}
-	
+
+	/**
+	 * Authenticates a user using email and password credentials.
+	 *
+	 * @param request The login request containing credentials
+	 * @return The authentication response containing a JWT token
+	 */
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
 		return ResponseEntity.ok(authService.login(request));
 	}
-	
+
+	/**
+	 * Returns the currently authenticated user.
+	 *
+	 * @param authentication The Spring Security authentication object
+	 * @return The authenticated user's details
+	 */
 	@GetMapping("/me")
 	public UserDto me(Authentication authentication) {
 		AppUserPrincipal principal = (AppUserPrincipal) authentication.getPrincipal();
 		User user = principal.getUser();
 		return toUserDto(user.getId());
 	}
-	
+
+	/**
+	 * Builds a {@link UserDto} for the given user ID.
+	 *
+	 * @param id The user ID
+	 * @return The populated user DTO
+	 */
 	private UserDto toUserDto(Long id) {
 		User user = userService.getById(id);
 		List<Project> userProjects = projectService.getProjectsForUser(id);
@@ -62,12 +91,24 @@ public class AuthController {
 				toProjectDtoList(userProjects),
 				toTaskDtoList(userTasks));
 	}
-	
+
+	/**
+	 * Converts a {@link Role} entity into a {@link RoleDto}.
+	 *
+	 * @param role The role entity
+	 * @return The role DTO
+	 */
 	private RoleDto toRoleDto(Role role) {
 		return new RoleDto(role.getId(),
 				role.getName());
 	}
-	
+
+	/**
+	 * Converts a list of {@link Project} entities into DTOs.
+	 *
+	 * @param projects The list of projects
+	 * @return The list of project DTOs
+	 */
 	private List<ProjectResponseDto> toProjectDtoList(List<Project> projects) {
 		List<ProjectResponseDto> projectResponseDtos = new ArrayList<>();
 		
@@ -87,7 +128,13 @@ public class AuthController {
 		
 		return projectResponseDtos;
 	}
-	
+
+	/**
+	 * Converts a list of {@link Task} entities into DTOs.
+	 *
+	 * @param tasks The list of tasks
+	 * @return The list of task DTOs
+	 */
 	private List<TaskResponseDto> toTaskDtoList(List<Task> tasks) {
 		List<TaskResponseDto> taskResponseDtos = new ArrayList<>();
 		

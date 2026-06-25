@@ -4,6 +4,9 @@ import at.jku.app.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Entity representing an OAuth account linked to a {@link User}.
+ */
 @Entity
 @Data
 @Table(name = "oauth_accounts")

@@ -5,6 +5,12 @@ import { AuthService } from './auth.service';
 import { of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+/**
+ * Route guard that prevents access to authenticated routes.
+ * <p>
+ * Loads the current user and allows navigation only if authentication is valid.
+ * Otherwise, redirects to the login page.
+ */
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);

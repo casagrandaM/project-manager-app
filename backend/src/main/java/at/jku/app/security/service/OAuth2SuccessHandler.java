@@ -15,6 +15,12 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Handles successful OAuth2 authentication and issues a JWT for the authenticated user.
+ * <p>
+ * This handler extracts provider-specific user information (Google, GitHub),
+ * creates an internal user representation and delegates authentication to {@link AuthService}.
+ */
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
@@ -22,7 +28,19 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	private final AuthService authService;
 	private final OAuth2AdditionalDataService additionalDataService;
 	private final OAuth2AuthorizedClientService authorizedClientService;
-	
+
+	/**
+	 * Invoked after successful OAuth2 authentication.
+	 * <p>
+	 * Builds an {@link OAuthUserInfo}, performs login via {@link AuthService},
+	 * and redirects the user with a JWT token.
+	 *
+	 * @param request        The HTTP request
+	 * @param response       The HTTP response
+	 * @param authentication The OAuth2 authentication object
+	 *
+	 * @throws IOException If redirection fails
+	 */
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 		
@@ -36,16 +54,24 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		
 		response.sendRedirect("http://localhost:4200/oauth/callback?jwt=" + jwt);
 	}
-	
-	private OAuthUserInfo createUserInfo(AuthProvider provider, OAuth2AuthenticationToken token, OAuth2User oauthUser) {
+
+	/**
+	 * Creates an {@link OAuthUserInfo} based on the OAuth2 provider.
+	 *
+	 * @param provider  The OAuth2 provider
+	 * @param token     The OAuth2 authentication token
+	 * @param oAuthUser The authenticated OAuth2 user
+	 * @return The extracted user information
+	 */
+	private OAuthUserInfo createUserInfo(AuthProvider provider, OAuth2AuthenticationToken token, OAuth2User oAuthUser) {
 		return switch (provider) {
 			case GOOGLE -> {
-				String email = oauthUser.getAttribute("email");
-				String name = oauthUser.getAttribute("name");
+				String email = oAuthUser.getAttribute("email");
+				String name = oAuthUser.getAttribute("name");
 				
 				yield new OAuthUserInfo(
 						provider,
-						oauthUser.getName(),
+						oAuthUser.getName(),
 						email,
 						name
 				);
@@ -56,15 +82,15 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 				
 				String accessToken = client.getAccessToken().getTokenValue();
 				String email = additionalDataService.getGithubPrimaryEmail(accessToken);
-				String name = oauthUser.getAttribute("name");
+				String name = oAuthUser.getAttribute("name");
 				
 				if (name == null || name.isBlank()) {
-					name = oauthUser.getAttribute("login");
+					name = oAuthUser.getAttribute("login");
 				}
 				
 				yield new OAuthUserInfo(
 						provider,
-						oauthUser.getName(),
+						oAuthUser.getName(),
 						email,
 						name
 				);

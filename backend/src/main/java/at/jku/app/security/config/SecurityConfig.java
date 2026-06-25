@@ -23,6 +23,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Security configuration for application authentication and authorization.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -32,7 +35,16 @@ public class SecurityConfig {
 	private final JwtFilter jwtFilter;
 	private final OAuth2SuccessHandler oAuth2SuccessHandler;
 	private final ClientRegistrationRepository clientRegistrationRepository;
-	
+
+	/**
+	 * Configures HTTP security including JWT authentication, OAuth2 login,
+	 * public endpoints and request authorization rules.
+	 *
+	 * @param http The {@link HttpSecurity} configuration
+	 * @return The configured {@link SecurityFilterChain}
+	 *
+	 * @throws Exception If the security configuration cannot be built
+	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)

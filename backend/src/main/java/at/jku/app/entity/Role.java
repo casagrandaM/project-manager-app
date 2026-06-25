@@ -3,6 +3,9 @@ package at.jku.app.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Entity representing a user role.
+ */
 @Entity
 @Data
 @Table(name="roles")

@@ -8,11 +8,26 @@ import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
+/**
+ * Service for retrieving additional OAuth2 user data from external providers.
+ * <p>
+ * Currently used to fetch GitHub user email information (which is not directly included
+ * in the response due to the possibility of a GitHub account having multiple
+ * emails) via the GitHub API.
+ */
 @Service
 public class OAuth2AdditionalDataService {
 	
 	private final RestClient restClient = RestClient.builder().build();
-	
+
+	/**
+	 * Retrieves the primary verified email address from GitHub using the provided access token.
+	 *
+	 * @param accessToken The GitHub OAuth access token
+	 * @return The primary verified email address
+	 *
+	 * @throws IllegalStateException If no email data is returned or no valid email is found
+	 */
 	public String getGithubPrimaryEmail(String accessToken) {
 		List<GithubEmailDto> emails = restClient.get()
 						.uri("https://api.github.com/user/emails")

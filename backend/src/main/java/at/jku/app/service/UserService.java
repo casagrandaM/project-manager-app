@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service for managing {@link User} entities.
+ */
 @Service
 public class UserService {
 
@@ -24,10 +27,22 @@ public class UserService {
 		this.taskAssignmentRepository = taskAssignmentRepository;
     }
 
+    /**
+     * Retrieves all users.
+     *
+     * @return The list of all users
+     */
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    
+
+    /**
+     * Retrieves the currently authenticated user.
+     *
+     * @return The authenticated user
+     *
+     * @throws IllegalStateException If no authenticated user exists or the user cannot be found
+     */
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
@@ -39,27 +54,61 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("User not found"));
     }
 
+    /**
+     * Retrieves a user by its ID.
+     *
+     * @param id The user ID
+     * @return The matching user
+     *
+     * @throws RuntimeException If no user with the given ID exists
+     */
     public User getById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
+    /**
+     * Retrieves a user by their email address.
+     *
+     * @param email The user email address
+     * @return The matching user
+     *
+     * @throws RuntimeException If no user with the given email address exists
+     */
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
+    /**
+     * Creates and persists a new user.
+     *
+     * @param user The user to create
+     * @return The created user
+     */
     public User createUser(User user) {
         return userRepository.save(user);
     }
-    
+
+    /**
+     * Updates the name and email address of a user.
+     *
+     * @param id    The user ID
+     * @param name  The username
+     * @param email The user email address
+     */
     public void updateUser(Long id, String name, String email) {
         User user = getById(id);
         user.setName(name);
         user.setEmail(email);
         userRepository.save(user);
     }
-    
+
+    /**
+     * Deletes a user and removes all associated project memberships and task assignments.
+     *
+     * @param id The user ID
+     */
     public void deleteUser(Long id) {
         projectMemberRepository.deleteAll(projectMemberRepository.findByUserId(id));
         taskAssignmentRepository.deleteAll(taskAssignmentRepository.findByAssigneeId(id));

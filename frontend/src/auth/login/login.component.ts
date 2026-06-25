@@ -3,6 +3,11 @@ import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../auth.service';
 import {FormsModule} from '@angular/forms';
 
+/**
+ * Component responsible for user login via email/password and OAuth providers.
+ * <p>
+ * Handles authentication requests and redirects the user after successful login.
+ */
 @Component({
   selector: 'app-login',
   imports: [
@@ -18,6 +23,9 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  /**
+   * Initiates login flow to authenticate a user with email and password credentials.
+   */
   login(): void {
     this.authService.login({
       email: this.email,
@@ -36,10 +44,16 @@ export class LoginComponent {
     });
   }
 
+  /**
+   * Initiates Google OAuth login flow.
+   */
   loginWithGoogle(): void {
     this.authService.loginWithGoogle();
   }
 
+  /**
+   * Initiates GitHub OAuth login flow.
+   */
   loginWithGithub(): void {
     this.authService.loginWithGithub();
   }
