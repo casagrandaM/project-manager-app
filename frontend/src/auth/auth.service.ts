@@ -149,6 +149,8 @@ export class AuthService {
    */
   logout(): void {
     localStorage.removeItem('jwt');
+    sessionStorage.removeItem('jwt');
+    document.cookie = "jwt=; Max-Age=0; path=/";
     this.currentUser = undefined;
   }
 }

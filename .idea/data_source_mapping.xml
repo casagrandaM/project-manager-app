@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/db/init/01_init.sql" value="bdcd2e66-d7a8-4314-b9a6-639de026495e" />
+    <file url="file://$PROJECT_DIR$/db/init/02_seed_data.sql" value="bdcd2e66-d7a8-4314-b9a6-639de026495e" />
+    <file url="file://$PROJECT_DIR$/db/init/03_auth_provider_data.sql" value="bdcd2e66-d7a8-4314-b9a6-639de026495e" />
+  </component>
+</project>
