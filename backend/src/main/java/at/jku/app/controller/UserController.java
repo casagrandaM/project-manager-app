@@ -5,12 +5,10 @@ import at.jku.app.entity.*;
 import at.jku.app.service.ProjectService;
 import at.jku.app.service.TaskService;
 import at.jku.app.service.UserService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * REST controller for managing users and exposing user-related data.

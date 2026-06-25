@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable, tap} from 'rxjs';
-import {User} from '../models/user.model';
+import { Observable, tap } from 'rxjs';
+import { User } from '../models/user.model';
 
 /**
  * Represents a login request containing user credentials.

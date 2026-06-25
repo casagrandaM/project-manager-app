@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import {AuthService} from '../auth.service';
+import { AuthService } from '../auth.service';
 
 /**
  * Component responsible for user registration and OAuth login options.

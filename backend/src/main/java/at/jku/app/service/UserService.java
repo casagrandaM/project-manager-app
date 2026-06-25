@@ -1,8 +1,6 @@
 package at.jku.app.service;
 
 import at.jku.app.entity.User;
-import at.jku.app.repository.ProjectMemberRepository;
-import at.jku.app.repository.TaskAssignmentRepository;
 import at.jku.app.repository.UserRepository;
 import at.jku.app.security.data.AppUserPrincipal;
 import org.springframework.security.core.Authentication;
@@ -18,14 +16,10 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProjectMemberRepository projectMemberRepository;
-    private final TaskAssignmentRepository taskAssignmentRepository;
-
-    public UserService(UserRepository userRepository, ProjectMemberRepository projectMemberRepository, TaskAssignmentRepository taskAssignmentRepository) {
+	
+	public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-		this.projectMemberRepository = projectMemberRepository;
-		this.taskAssignmentRepository = taskAssignmentRepository;
-    }
+	}
 
     /**
      * Retrieves all users.

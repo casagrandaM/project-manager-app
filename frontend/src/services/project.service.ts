@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {Project, CreateProject, UpdateProject} from '../models/project.model';
-import {ActivityEvent} from '../models/activity-event.model';
+import { Project, CreateProject, UpdateProject } from '../models/project.model';
+import { ActivityEvent } from '../models/activity-event.model';
 
 /**
  * Service that communicates with the backend project API and exposes

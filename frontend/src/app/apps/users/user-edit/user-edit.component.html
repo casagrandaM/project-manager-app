@@ -6,7 +6,6 @@
 
     <div style="background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(37,99,235,0.08); padding: 28px;">
 
-      <!-- Name -->
       <div style="margin-bottom: 20px;">
         <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px;">Name</label>
         <input
@@ -17,7 +16,6 @@
           (blur)="onBlur($event)" />
       </div>
 
-      <!-- Email -->
       <div style="margin-bottom: 28px;">
         <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px;">E-Mail</label>
         <input
@@ -28,7 +26,6 @@
           (blur)="onBlur($event)" />
       </div>
 
-      <!-- Buttons -->
       <div style="display: flex; gap: 10px;">
         <button
           (click)="save()"
@@ -43,7 +40,6 @@
         </button>
       </div>
 
-      <!-- Feedback -->
       @if (successMessage) {
         <p style="margin: 16px 0 0 0; color: #16a34a; font-size: 0.88rem; font-weight: 500; text-align: center;">{{ successMessage }}</p>
       }

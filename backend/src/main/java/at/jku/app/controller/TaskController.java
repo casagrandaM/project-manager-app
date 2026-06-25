@@ -63,7 +63,7 @@ public class TaskController {
 
         Task saved = taskService.createTask(task);
 
-        // Standard Status "To Do" setzen
+        // Set standard status "To Do"
         Status todo = statusService.getByName("To Do");
         statusHistoryService.changeStatus(saved, todo, user);
 

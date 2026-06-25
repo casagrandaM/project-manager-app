@@ -1,27 +1,12 @@
 <div style="min-height:100vh; background:#f4f6fb; display:flex; align-items:center; justify-content:center; font-family:'Segoe UI',sans-serif;">
-
   <div style="width:100%; max-width:500px; background:white; border-radius:18px; overflow:hidden; box-shadow:0 10px 30px rgba(37,99,235,0.15);">
-
     <div style="background:linear-gradient(135deg,#1a2a6c 0%,#2563eb 60%,#38bdf8 100%); padding:36px;">
-
-      <p style="margin:0; color:rgba(255,255,255,.7); text-transform:uppercase; letter-spacing:.08em; font-size:.85rem;">
-        Projektmanager
-      </p>
-
-      <h1 style="margin:8px 0 0 0; color:white; font-size:2rem; font-weight:700;">
-        Account erstellen
-      </h1>
-
-      <p style="margin:10px 0 0 0; color:rgba(255,255,255,.75);">
-        Registrieren Sie sich, um Projekte zu verwalten und mit Ihrem Team zusammenzuarbeiten.
-      </p>
-
+      <p style="margin:0; color:rgba(255,255,255,.7); text-transform:uppercase; letter-spacing:.08em; font-size:.85rem;">Projektmanager</p>
+      <h1 style="margin:8px 0 0 0; color:white; font-size:2rem; font-weight:700;">Account erstellen</h1><p style="margin:10px 0 0 0; color:rgba(255,255,255,.75);">Registrieren Sie sich, um Projekte zu verwalten und mit Ihrem Team zusammenzuarbeiten.</p>
     </div>
 
     <div style="padding:32px;">
-
       <div style="display:flex; flex-direction:column; gap:16px;">
-
         <input
           type="text"
           [(ngModel)]="name"
@@ -51,7 +36,6 @@
           style="background:#2563eb; color:white; border:none; padding:14px; border-radius:10px; font-weight:600; cursor:pointer; font-size:.95rem;">
           Account erstellen
         </button>
-
       </div>
 
       <div style="display:flex; align-items:center; margin:24px 0;">
@@ -61,7 +45,6 @@
       </div>
 
       <div style="display:flex; flex-direction:column; gap:12px;">
-
         <button
           (click)="loginWithGoogle()"
           style="background:white; border:1px solid #dbe4f0; padding:13px; border-radius:10px; cursor:pointer; font-weight:600;">
@@ -73,25 +56,12 @@
           style="background:#111827; color:white; border:none; padding:13px; border-radius:10px; cursor:pointer; font-weight:600;">
           Mit Github registrieren
         </button>
-
       </div>
 
       <div style="margin-top:24px; text-align:center;">
-
-        <span style="color:#64748b;">
-          Sie haben schon einen Account?
-        </span>
-
-        <a
-          routerLink="/login"
-          style="margin-left:6px; color:#2563eb; text-decoration:none; font-weight:600;">
-          Login
-        </a>
-
+        <span style="color:#64748b;">Sie haben schon einen Account?</span>
+        <a routerLink="/login" style="margin-left:6px; color:#2563eb; text-decoration:none; font-weight:600;">Login</a>
       </div>
-
     </div>
-
   </div>
-
 </div>

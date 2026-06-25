@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 import { TaskPageComponent } from './apps/tasks/task-page/task-page.component';
 import { ProjectPageComponent } from './apps/projects/project-page/project-page.component';
 import { ProjectDetailComponent } from './apps/projects/project-detail/project-detail.component';
-import {UserProfileComponent} from './apps/users/user-profile/user-profile.component';
-import {UserEditComponent} from './apps/users/user-edit/user-edit.component';
-import {OAuthCallbackComponent} from '../auth/oauth-callback.component';
-import {authGuard} from '../auth/auth.guard';
-import {LoginComponent} from '../auth/login/login.component';
-import {RegisterComponent} from '../auth/register/register.component';
-import {UserListComponent} from './apps/users/user-list/user-list.component';
+import { UserProfileComponent } from './apps/users/user-profile/user-profile.component';
+import { UserEditComponent } from './apps/users/user-edit/user-edit.component';
+import { OAuthCallbackComponent } from '../auth/oauth-callback.component';
+import { authGuard } from '../auth/auth.guard';
+import { LoginComponent } from '../auth/login/login.component';
+import { RegisterComponent } from '../auth/register/register.component';
+import { UserListComponent } from './apps/users/user-list/user-list.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },

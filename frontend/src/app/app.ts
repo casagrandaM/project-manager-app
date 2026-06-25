@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
 import {RouterOutlet, RouterLink, RouterLinkActive, Router} from '@angular/router';
-import {AuthService} from '../auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -26,10 +26,6 @@ export class App {
 
   showNavbar(): boolean {
     return !['/login', '/register'].includes(this.router.url);
-  }
-
-  isAdmin(): boolean {
-    return this.authService.isAdmin();
   }
 
   logout(): void {

@@ -1,11 +1,9 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {User} from '../../../../models/user.model';
 import {Router, RouterLink} from '@angular/router';
-import {UserService} from '../../../../services/user.service';
 import {Project} from '../../../../models/project.model';
 import {Task} from '../../../../models/task.model';
-import {AsyncPipe, DatePipe} from '@angular/common';
-import {Observable} from 'rxjs';
+import {DatePipe} from '@angular/common';
 import {AuthService} from '../../../../auth/auth.service';
 
 /**

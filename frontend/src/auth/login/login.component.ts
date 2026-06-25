@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
-import {AuthService} from '../auth.service';
-import {FormsModule} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../auth.service';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Component responsible for user login via email/password and OAuth providers.

@@ -60,7 +60,6 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    // STATUS LOGIC
     public Status getCurrentStatus(Long taskId) {
         List<StatusHistory> history = statusHistoryService.getByTaskId(taskId);
 
@@ -81,7 +80,6 @@ public class TaskService {
     public void assignUser(Long taskId, Long userId) {
         Task task = getTaskById(taskId);
 
-        // Alte Zuweisung löschen
         List<TaskAssignment> existing = taskAssignmentRepository.findByTaskId(taskId);
         taskAssignmentRepository.deleteAll(existing);
 

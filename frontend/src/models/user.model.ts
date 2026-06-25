@@ -1,5 +1,5 @@
-import {Project} from './project.model';
-import {Task} from './task.model';
+import { Project } from './project.model';
+import { Task } from './task.model';
 
 /**
  * Represents a user in the system.

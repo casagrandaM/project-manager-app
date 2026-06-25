@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {User} from '../models/user.model';
-import {AuthService} from '../auth/auth.service';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { User } from '../models/user.model';
+import { AuthService } from '../auth/auth.service';
 
 /**
  * Service for handling user-related operations and communication with the backend API.

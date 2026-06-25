@@ -1,6 +1,5 @@
 <div class="detail-wrapper">
 
-  <!-- ── Hero ── -->
   @if (project) {
     <div class="project-hero" [style.background]="getCardGradient(project.id)">
       <button class="btn-back" (click)="goBack()">
@@ -29,7 +28,6 @@
     </div>
   }
 
-  <!-- ── Progress ── -->
   @if (!showForm && tasks.length > 0) {
     <div class="progress-section">
       <div class="progress-top">
@@ -65,7 +63,6 @@
     </div>
   }
 
-  <!-- ── Activity ── -->
   @if (!showForm && activityEvents.length > 0) {
     <div class="activity-section">
       <button class="activity-toggle" (click)="showActivity = !showActivity">
@@ -120,7 +117,6 @@
     </div>
   }
 
-  <!-- ── View controls ── -->
   @if (!showForm) {
     <div class="view-controls">
       <div class="view-toggle">
@@ -147,7 +143,6 @@
     <div class="view-divider"></div>
   }
 
-  <!-- ── Content ── -->
   <div class="detail-content">
     @if (showList) {
       <app-task-list
@@ -179,7 +174,6 @@
     }
   </div>
 
-  <!-- ── Dialog ── -->
   @if (showDialog) {
     <div class="dialog-backdrop">
       <div class="dialog-box">
