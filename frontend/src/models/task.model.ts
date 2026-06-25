@@ -1,3 +1,9 @@
+/**
+ * Represents a task in the system.
+ *
+ * <p>Contains the task details together with optional metadata such as its
+ * current status, project assignment, creator, and assigned user.</p>
+ */
 export interface Task {
   id: number;
   title: string;
@@ -11,6 +17,12 @@ export interface Task {
   assignedUserName?: string;
 }
 
+/**
+ * Represents the data required to create a new task.
+ *
+ * <p>Contains the mandatory task information together with optional
+ * description, deadline, and user assignment.</p>
+ */
 export interface CreateTask {
   title: string;
   description?: string;

@@ -10,6 +10,12 @@ import { Status } from '../../../../models/status.model';
 import { Project } from '../../../../models/project.model';
 import { User } from '../../../../models/user.model';
 
+/**
+ * Form component for creating and editing tasks. It loads the required
+ * reference data (statuses, projects, and users), validates user input,
+ * creates or updates tasks, and notifies the parent component when the form
+ * is saved or cancelled.
+ */
 @Component({
   selector: 'app-task-form',
   standalone: true,
@@ -43,13 +49,18 @@ export class TaskFormComponent implements OnInit {
   projects: Project[] = [];
 
   constructor(
-      private taskService: TaskService,
-      private statusService: StatusService,
-      private projectService: ProjectService,
-      private userService: UserService,
-      private cdr: ChangeDetectorRef
+    private taskService: TaskService,
+    private statusService: StatusService,
+    private projectService: ProjectService,
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
   ) {}
 
+  /**
+   * Initializes the form by determining whether it is in create or edit mode,
+   * populating existing task data when editing, and loading the available
+   * statuses, projects, and users.
+   */
   ngOnInit(): void {
     this.isEditMode = !!this.taskToEdit;
 
@@ -103,6 +114,11 @@ export class TaskFormComponent implements OnInit {
     });
   }
 
+  /**
+   * Validates the required form fields and emits an error message if any are
+   * missing.
+   * @returns Whether the form input is valid
+   */
   validateForm(): boolean {
     const errors: string[] = [];
 
@@ -124,6 +140,11 @@ export class TaskFormComponent implements OnInit {
     return true;
   }
 
+  /**
+   * Creates a new task or updates the existing one depending on the current
+   * form mode. When editing, the task status is updated after the task details
+   * have been saved successfully.
+   */
   saveTask(): void {
     if (!this.validateForm()) {
       return;
@@ -174,6 +195,9 @@ export class TaskFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Closes the form without saving any changes.
+   */
   cancel(): void {
     this.close.emit(false);
   }

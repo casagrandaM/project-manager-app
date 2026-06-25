@@ -5,6 +5,12 @@ import { StatusService } from '../../../../services/status.service';
 import { Task } from '../../../../models/task.model';
 import { Status } from '../../../../models/status.model';
 
+/**
+ * Kanban board component for displaying project tasks grouped by their status.
+ * It loads available task statuses and tasks, organizes them into columns,
+ * supports moving tasks between statuses, and emits events for editing tasks
+ * and notifying the parent component about status changes.
+ */
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
@@ -20,14 +26,12 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
   @Output() edit = new EventEmitter<Task>();
   @Output() statusChanged = new EventEmitter<void>();
 
-  // Die drei Spalten
   todoTasks: Task[] = [];
   progressTasks: Task[] = [];
   doneTasks: Task[] = [];
 
   allStatuses: Status[] = [];
 
-  // IDs der Statusse (müssen dynamisch gefunden werden)
   statusIds = {
     todo: 0,
     progress: 0,
@@ -40,10 +44,18 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
     private cdr: ChangeDetectorRef
   ) {}
 
+  /**
+   * Loads the initial task and status data when the component is initialized.
+   */
   ngOnInit(): void {
     this.loadData();
   }
 
+  /**
+   * Reloads the board whenever the refresh trigger input changes after the
+   * initial component creation.
+   * @param changes The changed input properties
+   */
   ngOnChanges(changes: SimpleChanges): void {
     // Wenn sich der Trigger ändert (und es nicht das initiale Laden ist), Daten neu laden
     if (changes['refreshTrigger'] && !changes['refreshTrigger'].firstChange) {
@@ -51,6 +63,10 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Loads all available statuses and tasks, maps the status IDs, and sorts the
+   * tasks into their corresponding kanban columns.
+   */
   loadData(): void {
     // 1. Statusse laden (um IDs zu mappen)
     this.statusService.getAllStatuses().subscribe({
@@ -71,6 +87,9 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Maps the predefined status names to their corresponding backend IDs.
+   */
   mapStatusIds(): void {
     const todo = this.allStatuses.find(s => s.name === 'To Do');
     const progress = this.allStatuses.find(s => s.name === 'In Progress');
@@ -81,6 +100,11 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
     if (done) this.statusIds.done = done.id;
   }
 
+  /**
+   * Distributes the provided tasks into the To Do, In Progress, and Done
+   * columns based on their current status.
+   * @param tasks The tasks to organize
+   */
   sortTasksIntoColumns(tasks: Task[]): void {
     this.todoTasks = [];
     this.progressTasks = [];
@@ -101,6 +125,12 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Moves a task one step forward or backward through the workflow, updates its
+   * status in the backend, reloads the board, and notifies the parent component.
+   * @param task The task to move
+   * @param direction The direction in which to move the task
+   */
   moveTask(task: Task, direction: 'forward' | 'backward'): void {
     let newStatusId = 0;
 
@@ -127,6 +157,12 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Updates a task to a specific status, applies the new status locally, and
+   * re-sorts the kanban columns without reloading all tasks.
+   * @param task The task to update
+   * @param newStatusId The ID of the target status
+   */
   updateTaskStatus(task: Task, newStatusId: number): void {
     this.taskService.changeTaskStatus(task.id, newStatusId).subscribe({
       next: () => {
@@ -143,6 +179,11 @@ export class KanbanBoardComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Emits the selected task so it can be opened in the parent component's edit
+   * form.
+   * @param task The task to edit
+   */
   openEdit(task: Task): void {
     this.edit.emit(task);
   }

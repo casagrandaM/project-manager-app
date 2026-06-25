@@ -4,6 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../../../services/task.service';
 import { Task } from '../../../../models/task.model';
 
+/**
+ * List component for displaying tasks. It loads tasks for the current project,
+ * supports filtering by a search term, and emits events for creating, editing,
+ * and deleting tasks while leaving these actions to the parent component.
+ */
 @Component({
   selector: 'app-task-list',
   standalone: true,
@@ -28,16 +33,27 @@ export class TaskListComponent implements OnInit, OnChanges {
     private cdr: ChangeDetectorRef
   ) {}
 
+  /**
+   * Loads the initial list of tasks when the component is initialized.
+   */
   ngOnInit(): void {
     this.loadTasks();
   }
 
+  /**
+   * Reloads the task list whenever the refresh trigger input changes after the
+   * initial component creation.
+   * @param changes The changed input properties
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['refreshTrigger'] && !changes['refreshTrigger'].firstChange) {
       this.loadTasks();
     }
   }
 
+  /**
+   * Loads all tasks for the current project and sorts them by their ID.
+   */
   public loadTasks(): void {
     this.taskService.getTasks(this.projectId ?? undefined).subscribe({
       next: (data) => {
@@ -48,6 +64,10 @@ export class TaskListComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Returns the list of tasks filtered by the current search term and sorted by
+   * their ID.
+   */
   get filteredTasks(): Task[] {
     let result = this.tasks;
     if (this.searchTerm) {
@@ -60,6 +80,10 @@ export class TaskListComponent implements OnInit, OnChanges {
     return result.sort((a, b) => a.id - b.id);
   }
 
+  /**
+   * Returns the color associated with a task status for display purposes.
+   * @param status The task status
+   */
   getStatusColor(status: string | undefined): string {
     if (status === 'To Do') return '#d9534f';
     if (status === 'In Progress') return '#f0ad4e';
@@ -67,14 +91,26 @@ export class TaskListComponent implements OnInit, OnChanges {
     return '#333';
   }
 
+  /**
+   * Emits a request to delete the specified task.
+   * @param id The ID of the task to delete
+   */
   deleteTask(id: number): void {
     this.requestDelete.emit(id);
   }
 
+  /**
+   * Emits the selected task so it can be edited by the parent component.
+   * @param task The task to edit
+   */
   openEditTask(task: Task): void {
     this.edit.emit(task);
   }
 
+  /**
+   * Emits an event requesting that the parent component open the task creation
+   * form.
+   */
   openCreateTask(): void {
     this.create.emit();
   }
