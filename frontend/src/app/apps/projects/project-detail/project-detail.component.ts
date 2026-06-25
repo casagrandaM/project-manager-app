@@ -11,6 +11,12 @@ import {Project} from '../../../../models/project.model';
 import { Task } from '../../../../models/task.model';
 import {ActivityEvent} from '../../../../models/activity-event.model';
 
+/**
+ * Detail page for a single project. It loads the project, its tasks and its
+ * activity feed, computes task statistics (progress, status counts), switches
+ * between the task list and kanban views, and hosts the task form together with
+ * a shared confirmation/success/error dialog for task create, edit and delete.
+ */
 @Component({
   selector: 'app-project-detail',
   standalone: true,
@@ -49,6 +55,9 @@ export class ProjectDetailComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
+  /**
+   * Reads the project ID from the route and loads the project on initialization.
+   */
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.projectId = +params['id'];
@@ -56,6 +65,9 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
+  /**
+   * Loads the project together with its task progress and activity feed.
+   */
   loadProject(): void {
     this.projectService.getProjectById(this.projectId).subscribe({
       next: (p) => { this.project = p; this.cdr.detectChanges(); },
@@ -65,6 +77,9 @@ export class ProjectDetailComponent implements OnInit {
     this.loadActivity();
   }
 
+  /**
+   * Loads the project's activity feed from the backend.
+   */
   loadActivity(): void {
     this.projectService.getProjectActivity(this.projectId).subscribe({
       next: (events) => { this.activityEvents = events; this.cdr.detectChanges(); },
@@ -72,12 +87,20 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
+  /**
+   * Maps an activity event type to its icon identifier used in the template.
+   * @param type The activity event type
+   */
   getActivityIcon(type: string): string {
     if (type === 'TASK_CREATED') return 'created';
     if (type === 'STATUS_CHANGED') return 'status';
     return 'assigned';
   }
 
+  /**
+   * Formats an ISO timestamp into a localized (de-AT) date and time string.
+   * @param timestamp The ISO timestamp
+   */
   formatActivityTime(timestamp: string): string {
     if (!timestamp) return '';
     const d = new Date(timestamp);
@@ -85,6 +108,9 @@ export class ProjectDetailComponent implements OnInit {
       + ', ' + d.toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' });
   }
 
+  /**
+   * Loads the tasks belonging to the current project.
+   */
   loadTaskProgress(): void {
     this.taskService.getTasks(this.projectId).subscribe({
       next: (tasks) => { this.tasks = tasks; this.cdr.detectChanges(); },
@@ -92,33 +118,55 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
+  /**
+   * The percentage (0–100) of the project's tasks that are done.
+   */
   get taskProgress(): number {
     if (this.tasks.length === 0) return 0;
     return Math.round((this.tasks.filter(t => t.status === 'Done').length / this.tasks.length) * 100);
   }
 
+  /**
+   * The number of tasks in the "Done" status.
+   */
   get taskDoneCount(): number {
     return this.tasks.filter(t => t.status === 'Done').length;
   }
 
+  /**
+   * The number of tasks in the "To Do" status.
+   */
   get taskToDoCount(): number {
     return this.tasks.filter(t => t.status === 'To Do').length;
   }
 
+  /**
+   * The number of tasks in the "In Progress" status.
+   */
   get taskInProgressCount(): number {
     return this.tasks.filter(t => t.status === 'In Progress').length;
   }
 
+  /**
+   * Navigates back to the projects overview.
+   */
   goBack(): void {
     this.router.navigate(['/projects']);
   }
 
+  /**
+   * Switches between the task list and kanban board views.
+   * @param view The view to show
+   */
   toggleView(view: 'list' | 'kanban'): void {
     this.showList = view === 'list';
     this.showKanban = view === 'kanban';
     this.showForm = false;
   }
 
+  /**
+   * Opens the task form in create mode.
+   */
   openForm(): void {
     this.taskToEdit = null;
     this.showForm = true;
@@ -126,6 +174,10 @@ export class ProjectDetailComponent implements OnInit {
     this.showKanban = false;
   }
 
+  /**
+   * Opens the task form in edit mode for the given task.
+   * @param task The task to edit
+   */
   openEditForm(task: Task): void {
     this.taskToEdit = task;
     this.showForm = true;
@@ -133,6 +185,12 @@ export class ProjectDetailComponent implements OnInit {
     this.showKanban = false;
   }
 
+  /**
+   * Handles the task form's close event. When refreshing, reloads tasks,
+   * progress and activity and shows a success message; otherwise asks the user
+   * to confirm discarding changes.
+   * @param refresh Whether the form was saved successfully
+   */
   closeForm(refresh: boolean): void {
     if (!refresh) {
       this.showConfirm('Möchten Sie wirklich abbrechen? Ungespeicherte Änderungen gehen verloren.', () => {
@@ -150,6 +208,10 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
+  /**
+   * Surfaces messages emitted by the task form as success or error alerts.
+   * @param event The message emitted by the form
+   */
   handleFormMessage(event: { text: string; type: 'success' | 'error' }): void {
     if (event.type === 'error') {
       this.showErrorAlert(event.text);
@@ -158,6 +220,11 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
+  /**
+   * Asks the user to confirm deletion and, if confirmed, deletes the task and
+   * refreshes the views, progress and activity feed.
+   * @param id The ID of the task to delete
+   */
   requestDelete(id: number): void {
     this.showConfirm('Sind Sie sicher, dass Sie diesen Task löschen wollen?', () => {
       this.taskService.deleteTask(id).subscribe({
@@ -174,6 +241,11 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
+  /**
+   * Opens a confirmation dialog and stores the callback to run if confirmed.
+   * @param message The confirmation message
+   * @param callback The action to execute on confirmation
+   */
   showConfirm(message: string, callback: () => void): void {
     this.dialogMessage = message;
     this.isConfirmDialog = true;
@@ -182,6 +254,11 @@ export class ProjectDetailComponent implements OnInit {
     this.showDialog = true;
   }
 
+  /**
+   * Shows a transient success dialog that auto-dismisses after 2 seconds and
+   * returns to the list view.
+   * @param message The success message
+   */
   showSuccessAlert(message: string): void {
     this.dialogMessage = message;
     this.isConfirmDialog = false;
@@ -194,6 +271,10 @@ export class ProjectDetailComponent implements OnInit {
     }, 2000);
   }
 
+  /**
+   * Shows an error alert dialog.
+   * @param message The error message
+   */
   showErrorAlert(message: string): void {
     this.dialogMessage = message;
     this.isConfirmDialog = true;
@@ -201,6 +282,11 @@ export class ProjectDetailComponent implements OnInit {
     this.showDialog = true;
   }
 
+  /**
+   * Closes the active dialog and, for a confirmed confirmation dialog, runs the
+   * stored callback.
+   * @param result Whether the user confirmed the dialog
+   */
   closeDialog(result: boolean): void {
     this.showDialog = false;
     if (this.isConfirmDialog && result && this.confirmCallback) {
@@ -209,6 +295,10 @@ export class ProjectDetailComponent implements OnInit {
     this.confirmCallback = null;
   }
 
+  /**
+   * Deterministically derives a CSS gradient for the project header from its ID.
+   * @param projectId The project ID
+   */
   getCardGradient(projectId: number): string {
     const gradients = [
       'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)',
@@ -225,6 +315,10 @@ export class ProjectDetailComponent implements OnInit {
     return gradients[Math.abs(h) % gradients.length];
   }
 
+  /**
+   * Resets the detail page back to the task list view, hiding the form and
+   * kanban board.
+   */
   resetToListView(): void {
     this.showForm = false;
     this.showKanban = false;

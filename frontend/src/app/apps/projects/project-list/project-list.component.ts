@@ -5,6 +5,11 @@ import { ProjectService } from '../../../../services/project.service';
 import { TaskService } from '../../../../services/task.service';
 import { Project } from '../../../../models/project.model';
 
+/**
+ * Component that displays the user's projects as searchable cards, including a
+ * per-project task completion progress indicator. Selection, creation, editing
+ * and deletion are delegated to the parent via output events.
+ */
 @Component({
   selector: 'app-project-list',
   standalone: true,
@@ -25,11 +30,18 @@ export class ProjectListComponent implements OnInit, OnChanges {
 
   constructor(private projectService: ProjectService, private taskService: TaskService, private cdr: ChangeDetectorRef) {}
 
+  /**
+   * Loads the projects and their task progress on component initialization.
+   */
   ngOnInit(): void {
     this.loadProjects();
     this.loadTaskProgress();
   }
 
+  /**
+   * Reloads projects and task progress whenever the parent increments the
+   * refresh trigger (e.g. after a project was created, edited or deleted).
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['refreshTrigger'] && !changes['refreshTrigger'].firstChange) {
       this.loadProjects();
@@ -37,6 +49,9 @@ export class ProjectListComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Fetches the current user's projects from the backend.
+   */
   loadProjects(): void {
     this.projectService.getProjects().subscribe({
       next: (data) => { this.projects = data; this.cdr.detectChanges(); },
@@ -44,6 +59,10 @@ export class ProjectListComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Loads all tasks and aggregates them per project into done/total counts
+   * used to render each project's progress bar.
+   */
   loadTaskProgress(): void {
     this.taskService.getTasks().subscribe({
       next: (tasks) => {
@@ -62,16 +81,29 @@ export class ProjectListComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Returns the completion percentage (0–100) of a project based on its
+   * done/total task counts.
+   * @param projectId The project ID
+   */
   getProjectProgress(projectId: number): number {
     const entry = this.projectProgress.get(projectId);
     if (!entry || entry.total === 0) return 0;
     return Math.round((entry.done / entry.total) * 100);
   }
 
+  /**
+   * Returns the done/total task counts for a project.
+   * @param projectId The project ID
+   */
   getProjectTaskCounts(projectId: number): { done: number; total: number } {
     return this.projectProgress.get(projectId) ?? { done: 0, total: 0 };
   }
 
+  /**
+   * Returns the projects filtered by the current search term, matching against
+   * title and description.
+   */
   get filteredProjects(): Project[] {
     const term = this.searchTerm.trim().toLowerCase();
     if (!term) return this.projects;
@@ -81,11 +113,20 @@ export class ProjectListComponent implements OnInit, OnChanges {
     );
   }
 
+  /**
+   * Formats an ISO date string into a localized (de-AT) date, or "-" if absent.
+   * @param dateStr The ISO date string
+   */
   formatDate(dateStr?: string): string {
     if (!dateStr) return '-';
     return new Date(dateStr).toLocaleDateString('de-AT');
   }
 
+  /**
+   * Deterministically derives a CSS gradient for a project card from its ID so
+   * that each project keeps a consistent color.
+   * @param projectId The project ID
+   */
   getCardGradient(projectId: number): string {
     const gradients = [
       'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)',
@@ -102,6 +143,10 @@ export class ProjectListComponent implements OnInit, OnChanges {
     return gradients[Math.abs(h) % gradients.length];
   }
 
+  /**
+   * Returns the uppercase first letter of a project title for the card avatar.
+   * @param title The project title
+   */
   getInitial(title: string): string {
     return title ? title.charAt(0).toUpperCase() : '?';
   }

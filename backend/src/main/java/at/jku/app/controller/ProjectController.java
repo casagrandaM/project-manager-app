@@ -21,6 +21,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing projects and exposing project-related data
+ * such as project CRUD operations and the aggregated activity feed.
+ */
 @RestController
 @RequestMapping("/api/projects")
 @CrossOrigin(origins = "*")
@@ -44,6 +48,11 @@ public class ProjectController {
         this.taskAssignmentRepository = taskAssignmentRepository;
     }
 
+    /**
+     * Retrieves all projects the currently authenticated user is a member of.
+     *
+     * @return The list of the user's projects as {@link ProjectResponseDto}s
+     */
     @GetMapping
     public List<ProjectResponseDto> getProjects() {
         return projectService.getProjectsForUser(userService.getCurrentUser().getId())
@@ -52,17 +61,39 @@ public class ProjectController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a single project by ID.
+     *
+     * @param id The project ID
+     * @return The project as {@link ProjectResponseDto}
+     */
     @GetMapping("/{id}")
     public ProjectResponseDto getProject(@PathVariable Long id) {
         return toDto(projectService.getProjectById(id));
     }
 
+    /**
+     * Creates a new project owned by the currently authenticated user. The
+     * creator is automatically added as a project member and project manager.
+     *
+     * @param dto The project creation data (title and description)
+     * @return The created project as {@link ProjectResponseDto}
+     */
     @PostMapping
     public ProjectResponseDto createProject(@RequestBody ProjectCreateDto dto) {
         Project project = projectService.createProject(dto.title, dto.description, userService.getCurrentUser().getId());
         return toDto(project);
     }
 
+    /**
+     * Updates the title and description of a project. Only the project owner
+     * may perform this operation.
+     *
+     * @param id  The project ID
+     * @param dto The updated project data
+     * @return The updated project as {@link ProjectResponseDto}, or HTTP 403 if
+     *         the current user is not the owner
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProject(@PathVariable Long id, @RequestBody ProjectUpdateDto dto) {
         try {
@@ -73,6 +104,14 @@ public class ProjectController {
         }
     }
 
+    /**
+     * Deletes a project together with all of its tasks, status history, task
+     * assignments and memberships. Only the project owner may perform this
+     * operation.
+     *
+     * @param id The project ID
+     * @return HTTP 200 on success, or HTTP 403 if the current user is not the owner
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         try {
@@ -83,6 +122,14 @@ public class ProjectController {
         }
     }
 
+    /**
+     * Builds a chronologically sorted activity feed for a project. The feed
+     * aggregates task creations, status changes and task assignments across all
+     * tasks belonging to the project, ordered from newest to oldest.
+     *
+     * @param id The project ID
+     * @return The list of activity events as {@link ActivityEventDto}s
+     */
     @GetMapping("/{id}/activity")
     public List<ActivityEventDto> getActivity(@PathVariable Long id) {
         List<ActivityEventDto> events = new ArrayList<>();
@@ -123,6 +170,13 @@ public class ProjectController {
         return events;
     }
 
+    /**
+     * Converts a {@link Project} entity to a {@link ProjectResponseDto},
+     * including creator information and whether the current user owns the project.
+     *
+     * @param project The project entity
+     * @return The populated {@link ProjectResponseDto}
+     */
     private ProjectResponseDto toDto(Project project) {
         ProjectResponseDto dto = new ProjectResponseDto();
         dto.id = project.getId();

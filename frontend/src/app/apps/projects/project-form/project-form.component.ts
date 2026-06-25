@@ -4,6 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../../services/project.service';
 import { Project } from '../../../../models/project.model';
 
+/**
+ * Form component for creating and editing projects. It operates in either
+ * create or edit mode depending on whether a project to edit is provided, and
+ * reports completion or error messages to the parent via output events.
+ */
 @Component({
   selector: 'app-project-form',
   standalone: true,
@@ -21,6 +26,10 @@ export class ProjectFormComponent implements OnInit {
 
   constructor(private projectService: ProjectService) {}
 
+  /**
+   * Determines the form mode and, in edit mode, pre-fills the form fields with
+   * the existing project's data.
+   */
   ngOnInit(): void {
     this.isEditMode = !!this.projectToEdit;
     if (this.isEditMode && this.projectToEdit) {
@@ -29,6 +38,10 @@ export class ProjectFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Validates the form and either creates or updates the project. Emits a close
+   * event with {@code true} on success or a message event on validation/HTTP error.
+   */
   save(): void {
     if (!this.form.title.trim()) {
       this.showMessage.emit({ text: 'Bitte geben Sie einen Projekttitel ein.', type: 'error' });
@@ -48,6 +61,9 @@ export class ProjectFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Cancels the form, emitting a close event with {@code false} (no refresh).
+   */
   cancel(): void {
     this.close.emit(false);
   }
